@@ -17,7 +17,6 @@ app.get("/api/v1/users", async (req, res) => {
     }
 })
 
-
 const PORT = process.env.PORT || 3000
 const start = async ()  => {
     // connect to db first then listen to port
