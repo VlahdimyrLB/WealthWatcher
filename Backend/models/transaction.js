@@ -18,4 +18,4 @@ const budgetScehma = mongoose.Schema({
     notes: String
 })
 
-module.exports = mongoose.model('Budget', budgetScehma)
+module.exports = mongoose.model('Transaction', budgetScehma)

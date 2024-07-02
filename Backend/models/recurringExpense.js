@@ -15,4 +15,4 @@ const recurringExpenseSchema = mongoose.Schema({
     notes: String
 })
 
-module.exports = mongoose.model('Expense', recurringExpenseSchema)
+module.exports = mongoose.model('RecurringExpense', recurringExpenseSchema)

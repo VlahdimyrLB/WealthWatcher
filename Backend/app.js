@@ -36,7 +36,7 @@ app.post('/api/v1/register', async (req, res) => {
 });
 
 // user login endpoint
-app.post('/api/v1//login', async (req, res) => {
+app.post('/api/v1/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
