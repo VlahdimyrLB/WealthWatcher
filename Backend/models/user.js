@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 // symbol, number, and capital letter checker for password
 const passwordValidator = (password) => {
@@ -7,21 +7,20 @@ const passwordValidator = (password) => {
   return regex.test(password);
 };
 
-// define user schema
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Must Provide Name"],
-    maxlength: [20, "Name must be less than or equal 20 characters"],
+    maxlength: [30, "Name must be less than or equal 30 characters"],
     trim: true,
-    unique: true
+    unique: true,
   },
   username: {
     type: String,
     required: [true, "Must Provide Username"],
     trim: true,
     maxlength: [20, "Username must be less than or equal 20 characters"],
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
@@ -29,25 +28,25 @@ const userSchema = new mongoose.Schema({
     minlength: [8, "Password must be at least 8 characters long"],
     validate: {
       validator: passwordValidator,
-      message: 'Password must contain at least one uppercase letter, one number, and one special character.'
-    }
+      message:
+        "Password must contain at least one uppercase letter, one number, and one special character.",
+    },
   },
 });
 
 // mddleware to hash password before saving
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
 
   try {
-    const salt = await bcrypt.genSalt(10); 
-    this.password = await bcrypt.hash(this.password, salt); 
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
-    next(error); 
+    next(error);
   }
 });
 
-
 const User = mongoose.model("User", userSchema);
 
-module.exports = User; 
+module.exports = User;
