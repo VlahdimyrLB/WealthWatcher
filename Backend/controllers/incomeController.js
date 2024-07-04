@@ -2,6 +2,15 @@ const Income = require("../models/income");
 const Transaction = require("../models/transaction");
 const mongoose = require("mongoose");
 
+const getAllIncome = async (req, res) => {
+  try {
+    const income = await Income.find({});
+    res.status(200).json({ income });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // add Income and also save the data in Transaction Table
 const addIncome = async (req, res) => {
   const { userId, amount, category, date, notes } = req.body;
@@ -109,5 +118,36 @@ const updateIncome = async (req, res) => {
 };
 
 // delete both data from income and transaction
+const deleteIncome = async (req, res) => {
+  const { incomeId } = req.params;
 
-module.exports = { addIncome, updateIncome };
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const incomeEntry = await Income.findById(incomeId).session(session);
+
+    console.log(incomeEntry);
+    if (!incomeEntry) {
+      throw new Error("Income entry not found");
+    }
+
+    await Income.findByIdAndDelete(incomeId, { session });
+
+    await Transaction.findByIdAndDelete(incomeEntry.transactionId, { session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).json({
+      message: "Deleted Successfully",
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getAllIncome, addIncome, updateIncome, deleteIncome };
