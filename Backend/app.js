@@ -3,6 +3,7 @@ const app = new express();
 const bcrypt = require("bcrypt");
 
 const User = require("./models/user.js");
+const Transaction = require("./models/transaction.js");
 
 require("dotenv").config();
 
@@ -12,9 +13,11 @@ app.use(express.json());
 // ROUTES
 const userRoutes = require("./routes/user");
 const incomeRoutes = require("./routes/income");
+const expenseRoutes = require("./routes/expense");
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/income", incomeRoutes);
+app.use("/api/v1/expense", expenseRoutes);
 
 // user registration endpoint
 app.post("/api/v1/register", async (req, res) => {
@@ -24,6 +27,16 @@ app.post("/api/v1/register", async (req, res) => {
     const user = new User({ name, username, password });
     await user.save();
     res.status(201).json({ message: "User created successfully" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// view all transaction
+app.get("/api/v1/transactions", async (req, res) => {
+  try {
+    const transactions = await Transaction.find();
+    res.status(200).json({ transactions });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
