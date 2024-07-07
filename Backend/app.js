@@ -14,10 +14,12 @@ app.use(express.json());
 const userRoutes = require("./routes/user");
 const incomeRoutes = require("./routes/income");
 const expenseRoutes = require("./routes/expense");
+const budgetRoutes = require("./routes/budget");
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/income", incomeRoutes);
 app.use("/api/v1/expense", expenseRoutes);
+app.use("/api/v1/budget", budgetRoutes);
 
 // user registration endpoint
 app.post("/api/v1/register", async (req, res) => {
@@ -65,7 +67,7 @@ app.post("/api/v1/login", async (req, res) => {
 
 // db connection and port listener
 const connectDB = require("./database/connect.js");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 const start = async () => {
   try {
