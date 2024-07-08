@@ -4,15 +4,15 @@
   "description": "A Finance Tracker web application built with MERN stack.",
   "main": "index.js",
   "scripts": {
-    "start:backend": "cd Backend && nodemon app.js",
-    "start:frontend": "cd Frontend && npm run dev",
-    "start": "npm-run-all --parallel start:Backend start:Frontend",
-    "test:backend": "cd Backend && npm test",
-    "test:frontend": "cd Frontend && npm test",
+    "start:backend": "cd backend && nodemon app.js",
+    "start:frontend": "cd frontend && npm run dev",
+    "start": "npm-run-all --parallel start:backend start:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
     "test": "npm-run-all --parallel test:backend test:frontend",
-    "build:backend": "cd Backend && npm run build",
-    "build:frontend": "cd Frontend && npm run build",
-    "build": "npm-run-all build:Backend build:Frontend"
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm-run-all build:backend build:frontend"
   },
   "keywords": [],
   "author": "",
