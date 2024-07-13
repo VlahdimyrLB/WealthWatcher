@@ -1,14 +1,12 @@
 const express = require("express");
 const app = new express();
 
-const User = require("./models/user.js");
 const Transaction = require("./models/transaction.js");
 
 require("dotenv").config();
 
 // parse JSON body and urlencode middleware
 app.use(express.json());
-app.use(express.urlencoded());
 
 // ROUTES
 const userRoutes = require("./routes/user");

@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// mddleware to hash password before saving
+// middleware to hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 

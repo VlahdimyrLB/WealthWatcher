@@ -1,10 +1,17 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+require("dotenv").config();
+
+// Generate JWT TOKEN
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30m" });
+};
 
 const registerUser = async (req, res) => {
   const { name, username, password } = req.body;
 
-  // Check if all required fields are provided
   if (!name || !username || !password) {
     return res.status(400).json({ error: "Please provide all fields" });
   }
@@ -15,18 +22,25 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // Encryption on the schema middleware
+    // const salt = await bcrypt.genSalt();
+    // const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = await User.create({
       name,
       username,
-      password: hashedPassword,
+      password,
+      // password: hashedPassword,
     });
 
     res.status(201).json({
       message: "User created successfully",
-      user: { name: newUser.name, username: newUser.username },
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        username: newUser.username,
+        token: generateToken(newUser._id),
+      },
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -43,14 +57,28 @@ const loginUser = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    res.status(200).json({ message: "Login successful" });
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        token: generateToken(user._id),
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+const getMe = async (req, res) => {
+  const { _id, name, username } = await User.findById(req.user.id);
+  res.status(200).json({ id: _id, name, username });
 };
 
 const getAllUsers = async (req, res) => {
@@ -123,6 +151,7 @@ const deleteUser = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  getMe,
   getAllUsers,
   getSingleUser,
   createUser,
