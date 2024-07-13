@@ -1,4 +1,57 @@
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
+
+const registerUser = async (req, res) => {
+  const { name, username, password } = req.body;
+
+  // Check if all required fields are provided
+  if (!name || !username || !password) {
+    return res.status(400).json({ error: "Please provide all fields" });
+  }
+
+  try {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = await User.create({
+      name,
+      username,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({
+      message: "User created successfully",
+      user: { name: newUser.name, username: newUser.username },
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ message: "Cannot find user" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    res.status(200).json({ message: "Login successful" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const getAllUsers = async (req, res) => {
   try {
@@ -68,6 +121,8 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
+  registerUser,
+  loginUser,
   getAllUsers,
   getSingleUser,
   createUser,

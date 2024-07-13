@@ -7,32 +7,36 @@ const passwordValidator = (password) => {
   return regex.test(password);
 };
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Must Provide Name"],
-    maxlength: [30, "Name must be less than or equal 30 characters"],
-    trim: true,
-    unique: true,
-  },
-  username: {
-    type: String,
-    required: [true, "Must Provide Username"],
-    trim: true,
-    maxlength: [20, "Username must be less than or equal 20 characters"],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, "Must Provide Password"],
-    minlength: [8, "Password must be at least 8 characters long"],
-    validate: {
-      validator: passwordValidator,
-      message:
-        "Password must contain at least one uppercase letter, one number, and one special character.",
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Must Provide a Name"],
+      maxlength: [30, "Name must be less than or equal 30 characters"],
+      trim: true,
+    },
+    username: {
+      type: String,
+      required: [true, "Must Provide Username"],
+      trim: true,
+      maxlength: [20, "Username must be less than or equal 20 characters"],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Must Provide Password"],
+      minlength: [8, "Password must be at least 8 characters long"],
+      validate: {
+        validator: passwordValidator,
+        message:
+          "Password must contain at least one uppercase letter, one number, and one special character.",
+      },
     },
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // mddleware to hash password before saving
 userSchema.pre("save", async function (next) {
