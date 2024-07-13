@@ -1,7 +1,6 @@
 const Budget = require("../models/budget");
 
 const getAllBudget = async (req, res) => {
-  const data = req.body;
   const budget = await Budget.find();
 
   try {
@@ -77,8 +76,9 @@ const updateBudget = async (req, res) => {
 
   try {
     const updatedBudget = await Budget.findOneAndUpdate(
-      budgetId,
+      { _id: budgetId },
       {
+        userId,
         amount,
         category,
         startDate,
@@ -104,7 +104,7 @@ const deleteBudget = async (req, res) => {
   const { budgetId } = req.params;
 
   try {
-    const deletedBudget = await Budget.findOneAndDelete(budgetId);
+    const deletedBudget = await Budget.findOneAndDelete({ _id: budgetId });
 
     if (!deletedBudget) {
       return res.status(404).json({ error: "Budget not found" });
