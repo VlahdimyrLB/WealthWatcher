@@ -43,9 +43,11 @@ const Navbar = ({ isHome, setIsHome }) => {
                 </NavLink>
               ) : null}
 
-              <Button variant="ghost" onClick={logout}>
-                Logout
-              </Button>
+              <NavLink to="/">
+                <Button variant="ghost" onClick={logout}>
+                  Logout
+                </Button>
+              </NavLink>
             </div>
           ) : (
             <>

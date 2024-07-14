@@ -7,6 +7,7 @@ const AuthContext = createContext();
 // AuthProvider component to wrap around the part of the app that needs authentication
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // useEffect to check if user is logged in on initial render and page refresh
@@ -46,6 +47,7 @@ const AuthProvider = ({ children }) => {
       setUser(response.data.user);
     } catch (error) {
       console.error("Login failed:", error);
+      setError(error.response.data.message);
       setUser(null);
     }
     setLoading(false);
@@ -58,7 +60,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, error }}>
       {/* Render children components */}
       {children}
     </AuthContext.Provider>
