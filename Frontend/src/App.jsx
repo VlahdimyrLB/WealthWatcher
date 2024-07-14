@@ -1,38 +1,46 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
-function App() {
-  const [transactions, setTransactions] = useState([]);
+// Pages
+import MainLayout from "./layouts/MainLayout";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import DashboardPage from "./pages/DashboardPage";
+import ErrorPage from "./pages/ErrorPage";
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
+// Auth Context
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
-  const fetchTransactions = async () => {
-    try {
-      const { data } = await axios.get("/api/v1/transactions");
-      console.log(data.transactions);
-      setTransactions(data.transactions);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
+const App = () => {
   return (
-    <div style={{ color: "white" }}>
-      {transactions.map((transaction) => (
-        <div key={transaction._id}>
-          <div>
-            <h3> {transaction.type} </h3>
-            <p>
-              {transaction.amount} {transaction.category} {transaction.date}
-            </p>
-          </div>
-        </div>
-      ))}
-    </div>
+    <ThemeProvider>
+      {/* Wrap the app with AuthProvider to provide authentication context */}
+      <AuthProvider>
+        {/* Wrap the app with Router or Brower Router for routing */}
+        <Router>
+          {/* Define routes */}
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage /> {/* Protected dashboard route */}
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<ErrorPage />} />
+            </Route>
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
