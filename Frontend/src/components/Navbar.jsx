@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ModeToggle } from "./theme/mode-toggle";
 import { Button } from "./ui/button";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 
-const Navbar = () => {
-  // Access user and logout function from context
+const Navbar = ({ isHome, setIsHome }) => {
   const { user, logout } = useContext(AuthContext);
+  let location = useLocation();
+
+  useEffect(() => {
+    if (
+      location.pathname === "/" ||
+      (location.pathname === "/login" && !isHome)
+    ) {
+      setIsHome(true);
+    } else {
+      setIsHome(false);
+    }
+  }, [location.pathname]);
 
   return (
     <nav>
@@ -25,11 +36,17 @@ const Navbar = () => {
           <ModeToggle />
 
           {user ? (
-            <NavLink to="/">
+            <div className="flex space-x-2 items-center justify-between">
+              {isHome ? (
+                <NavLink to="/dashboard">
+                  <Button variant="ghost">Go to Dashboard</Button>
+                </NavLink>
+              ) : null}
+
               <Button variant="ghost" onClick={logout}>
                 Logout
               </Button>
-            </NavLink>
+            </div>
           ) : (
             <>
               <NavLink to="/login">

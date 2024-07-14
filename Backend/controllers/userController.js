@@ -6,7 +6,7 @@ require("dotenv").config();
 
 // Generate JWT TOKEN
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30m" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
 
 const registerUser = async (req, res) => {
@@ -77,8 +77,16 @@ const loginUser = async (req, res) => {
 };
 
 const getMe = async (req, res) => {
-  const { _id, name, username } = await User.findById(req.user.id);
-  res.status(200).json({ id: _id, name, username });
+  try {
+    const { _id, name, username } = await User.findById(req.user.id);
+
+    // Generate token for the current user
+    const token = generateToken(req.user.id);
+
+    res.status(200).json({ id: _id, name, username, token });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 const getAllUsers = async (req, res) => {
