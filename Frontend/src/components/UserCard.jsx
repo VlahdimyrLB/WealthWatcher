@@ -1,5 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+import { Spinner2 } from "./Spinners";
 
 import {
   Card,
@@ -12,6 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 const UserCard = ({ cardTitle, cardDescription, cardContent, buttonName }) => {
+  const { loading } = useContext(AuthContext); // Access the login function from context
+
   return (
     <section className="flex items-center justify-center mt-10">
       <Card className="w-[350px] shadow-s, dark:shadow-gray-300/30">
@@ -29,7 +34,14 @@ const UserCard = ({ cardTitle, cardDescription, cardContent, buttonName }) => {
             </Button>
           </NavLink>
 
-          <Button type="submit">{buttonName}</Button>
+          {loading ? (
+            <>
+              <Spinner2 loading={loading} size={8} />
+              <Button type="submit">{buttonName}</Button>
+            </>
+          ) : (
+            <Button type="submit">{buttonName}</Button>
+          )}
         </CardFooter>
       </Card>
     </section>

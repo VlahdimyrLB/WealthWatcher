@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
-import Spinner from "@/components/Spinner";
+// import Spinner from "@/components/Spinner";
+import { Spinner } from "@/components/Spinners";
 
 const DashboardPage = () => {
   const { user, loading } = useContext(AuthContext);
@@ -13,8 +14,7 @@ const DashboardPage = () => {
         <div>
           {user ? (
             <div>
-              <p>Welcome {user.name}</p>
-              <p>JWT Token: {user.token}</p>
+              <p>Welcome! {user.name}</p>
             </div>
           ) : (
             <p>Not logged in</p>

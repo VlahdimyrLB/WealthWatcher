@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -9,6 +10,8 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   // useEffect to check if user is logged in on initial render and page refresh
   // para di lagi log in after marefresh
@@ -36,6 +39,9 @@ const AuthProvider = ({ children }) => {
 
   // Function to log in the user
   const login = async (username, password) => {
+    setLoading(true); // Set loading to true when login process starts
+    setError(null); // Reset error state
+
     try {
       const response = await axios.post("/api/v1/users/login", {
         username,
@@ -57,6 +63,7 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     Cookies.remove("token"); // Remove the token from cookies
     setUser(null); // Clear the user state
+    navigate("/");
   };
 
   return (

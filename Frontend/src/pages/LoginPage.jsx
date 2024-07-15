@@ -3,14 +3,13 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@/contexts/AuthContext";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import UserCard from "@/components/UserCard";
 
 const LoginPage = () => {
-  const { login, error } = useContext(AuthContext); // Access the login function from context
+  const { login, error, loading } = useContext(AuthContext); // Access the login function from context
   const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({
