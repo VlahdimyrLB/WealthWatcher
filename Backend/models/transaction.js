@@ -23,7 +23,7 @@ const transactionSchema = mongoose.Schema(
         "Food",
         "Bills",
         "Grocery",
-        "Social Life",
+        "Social",
         "Pets",
         "Transport",
         "Culture",
