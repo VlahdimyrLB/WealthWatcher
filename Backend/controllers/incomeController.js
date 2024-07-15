@@ -15,6 +15,10 @@ const getAllIncome = async (req, res) => {
 const addIncome = async (req, res) => {
   const { userId, amount, category, date, notes } = req.body;
 
+  if (!amount || !category || !date) {
+    return res.status(400).json({ message: "Please input required fields" });
+  }
+
   // session for transaction handling
   const session = await mongoose.startSession();
   session.startTransaction();
