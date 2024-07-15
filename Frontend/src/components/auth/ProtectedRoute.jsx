@@ -1,18 +1,20 @@
 import React from "react";
-import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "@/contexts/AuthContext";
+import { useContext } from "react";
+import { ClipLoader } from "react-spinners";
 
-// ProtectedRoute component to protect routes from unauthenticated users
 const ProtectedRoute = ({ children }) => {
-  // Access the user from context
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
 
-  if (!user) {
-    return <Navigate to="/login" replace />; // Redirect to login if user is not authenticated
+  if (loading) {
+    return <ClipLoader color="#123abc" loading={loading} size={50} />;
   }
 
-  // Render children components if user is authenticated
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
   return children;
 };
 

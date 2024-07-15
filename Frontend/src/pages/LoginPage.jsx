@@ -3,25 +3,19 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@/contexts/AuthContext";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import UserCard from "@/components/UserCard";
+
 const LoginPage = () => {
-  const { login } = useContext(AuthContext); // Access the login function from context
+  const { login, error, loading } = useContext(AuthContext); // Access the login function from context
+  const navigate = useNavigate();
+
   const [loginData, setLoginData] = useState({
     username: "",
     password: "",
   });
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setLoginData((prevLoginData) => ({
@@ -45,14 +39,12 @@ const LoginPage = () => {
   };
 
   return (
-    <section className="flex items-center justify-center mt-10">
-      <Card className="w-[350px] shadow-md shadow-gray-300/40">
-        <form onSubmit={handleSubmit}>
-          <CardHeader>
-            <CardTitle>Log In</CardTitle>
-            <CardDescription>Please enter your credentials</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col space-y-4">
+    <form onSubmit={handleSubmit}>
+      <UserCard
+        cardTitle="Log In"
+        cardDescription="Please enter your credentials"
+        cardContent={
+          <>
             <div className="flex flex-col space-y-1">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -63,7 +55,6 @@ const LoginPage = () => {
                 value={loginData.username}
                 onChange={handleChange}
               />
-              {/* handle error here */}
             </div>
             <div className="flex flex-col space-y-1">
               <Label htmlFor="password">Password</Label>
@@ -75,18 +66,16 @@ const LoginPage = () => {
                 value={loginData.password}
                 onChange={handleChange}
               />
-              {/* handle error here */}
             </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" type="button">
-              Cancel
-            </Button>
-            <Button type="submit">Log In</Button>
-          </CardFooter>
-        </form>
-      </Card>
-    </section>
+
+            <p className="text-center text-sm text-red-600 dark:text-red-500">
+              {error ? error : null}
+            </p>
+          </>
+        }
+        buttonName="Log In"
+      />
+    </form>
   );
 };
 

@@ -1,14 +1,27 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
+// import Spinner from "@/components/Spinner";
+import { Spinner } from "@/components/Spinners";
 
 const DashboardPage = () => {
-  const { user } = useContext(AuthContext);
-  console.log(user);
+  const { user, loading } = useContext(AuthContext);
+
   return (
-    <div>
-      Welcome User {user.name} JWT Token: {user.token}
-    </div>
+    <>
+      {loading ? (
+        <Spinner loading={loading} />
+      ) : (
+        <div>
+          {user ? (
+            <div>
+              <p>Welcome! {user.name}</p>
+            </div>
+          ) : (
+            <p>Not logged in</p>
+          )}
+        </div>
+      )}
+    </>
   );
 };
 
