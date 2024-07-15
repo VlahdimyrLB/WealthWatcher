@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 import {
@@ -40,11 +40,11 @@ function NavigationMenuDemo() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavLink to="/dashboard">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink asChild>
+            <Link to="/dashboard" className={navigationMenuTriggerStyle()}>
               Dashboard
-            </NavigationMenuLink>
-          </NavLink>
+            </Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
@@ -71,18 +71,17 @@ const ListItem = ({ title, href, description }) => {
   return (
     <li>
       <NavigationMenuLink asChild>
-        <NavLink
+        <Link
           to={href}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
           )}
-          activeClassName="text-accent"
         >
           <div className="text-sm font-medium leading-none">{title}</div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {description}
           </p>
-        </NavLink>
+        </Link>
       </NavigationMenuLink>
     </li>
   );

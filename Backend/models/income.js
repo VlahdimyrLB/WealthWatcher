@@ -24,7 +24,6 @@ const incomeSchema = mongoose.Schema(
       ],
       default: "Others",
     },
-    // source: String,
     date: Date,
     notes: String,
   },

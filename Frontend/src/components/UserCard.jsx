@@ -18,7 +18,7 @@ const UserCard = ({ cardTitle, cardDescription, cardContent, buttonName }) => {
   const { loading } = useContext(AuthContext); // Access the login function from context
 
   return (
-    <section className="flex items-center justify-center mt-10">
+    <section className="flex items-center justify-center">
       <Card className="w-[350px] shadow-s, dark:shadow-gray-300/30">
         <CardHeader>
           <CardTitle>{cardTitle}</CardTitle>

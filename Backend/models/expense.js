@@ -17,7 +17,7 @@ const expenseSchema = mongoose.Schema(
         "Food",
         "Bills",
         "Grocery",
-        "Social Life",
+        "Social",
         "Pets",
         "Transport",
         "Culture",
@@ -32,7 +32,7 @@ const expenseSchema = mongoose.Schema(
       default: "Others",
     },
     date: Date,
-    recurring: Boolean,
+
     notes: String,
   },
   {
