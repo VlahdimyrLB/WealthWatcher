@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   getAllExpense,
+  getAllUserExpense,
   addExpense,
   updateExpense,
   deleteExpense,
@@ -10,6 +11,8 @@ const {
 
 router.route("/").get(getAllExpense).post(addExpense);
 
-router.route("/:expenseId").get().patch(updateExpense).delete(deleteExpense);
+router.route("/:expenseId").patch(updateExpense).delete(deleteExpense);
+
+router.route("/user/:userId").get(getAllUserExpense);
 
 module.exports = router;
