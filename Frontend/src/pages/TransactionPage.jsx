@@ -19,13 +19,15 @@ const TransactionPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  console.log(user);
+
   const fetchTransactions = async () => {
-    if (!user.id) {
+    if (!user._id) {
       return console.log("no user");
     }
 
     try {
-      const response = await axios.get(`/api/v1/transaction/user/${user.id}`);
+      const response = await axios.get(`/api/v1/transaction/user/${user._id}`);
       const sortedTransactions = response?.data?.transactions.sort(
         (a, b) => new Date(b.date) - new Date(a.date)
       );
@@ -39,11 +41,11 @@ const TransactionPage = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, [user.id]);
+  }, [user._id]);
 
   return (
-    <section className="flex">
-      <div className="w-3/5 p-4">
+    <section className="flex flex-col lg:flex-row">
+      <div className="lg:w-3/5 p-4 ">
         <div className="-mt-10 -ml-3">
           <div className="text-[17px] font-semibold opacity-80 mb-4">
             <Breadcrumb>
@@ -60,7 +62,7 @@ const TransactionPage = () => {
 
         <TransactionTable transactions={transactions} loading={loading} />
       </div>
-      <div className="w-2/5 p-4">
+      <div className="lg:w-2/5 p-4 flex items-center justify-center">
         <CreateTransaction fetchTransactions={fetchTransactions} />
       </div>
     </section>
