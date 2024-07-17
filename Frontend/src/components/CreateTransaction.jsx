@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import IncomeForm from "./IncomeForm";
 import ExpenseForm from "./ExpenseForm";
 import { useToast } from "@/components/ui/use-toast";
-import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 
-const CreateTransaction = () => {
+const CreateTransaction = ({ fetchTransactions }) => {
   const { toast } = useToast();
   const { user } = useContext(AuthContext);
 
@@ -64,6 +63,7 @@ const CreateTransaction = () => {
       });
 
       clearIncomeForm();
+      fetchTransactions();
     } catch (error) {
       setErrorIncome(error.response?.data?.message || "An error occurred");
     } finally {
@@ -82,6 +82,7 @@ const CreateTransaction = () => {
       });
 
       clearExpenseForm();
+      fetchTransactions();
     } catch (error) {
       setErrorExpense(error.response?.data?.message || "An error occurred");
     } finally {
