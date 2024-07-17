@@ -3,10 +3,13 @@ const router = express.Router();
 
 const {
   getAllIncome,
+  getAllUserIncome,
   addIncome,
   updateIncome,
   deleteIncome,
 } = require("../controllers/incomeController");
+
+router.route("/user/:userId").get(getAllUserIncome);
 
 router.route("/").get(getAllIncome).post(addIncome);
 

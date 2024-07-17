@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import IncomeForm from "./IncomeForm";
 import ExpenseForm from "./ExpenseForm";
 import { useToast } from "@/components/ui/use-toast";
+import { AuthContext } from "@/contexts/AuthContext";
 
-const CreateTransaction = () => {
+const CreateTransaction = ({ fetchTransactions }) => {
   const { toast } = useToast();
+  const { user } = useContext(AuthContext);
 
   const [loadingIncome, setLoadingIncome] = useState(false);
   const [loadingExpense, setLoadingExpense] = useState(false);
@@ -15,6 +17,7 @@ const CreateTransaction = () => {
   const [errorExpense, setErrorExpense] = useState(null);
 
   const [incomeFormData, setIncomeFormData] = useState({
+    userId: user.id,
     date: new Date(),
     amount: "",
     category: "",
@@ -22,6 +25,7 @@ const CreateTransaction = () => {
   });
 
   const [expenseFormData, setExpenseFormData] = useState({
+    userId: user.id,
     date: new Date(),
     amount: "",
     category: "",
@@ -30,6 +34,7 @@ const CreateTransaction = () => {
 
   const clearIncomeForm = () => {
     setIncomeFormData({
+      userId: user.id,
       date: new Date(),
       amount: "",
       category: "",
@@ -39,6 +44,7 @@ const CreateTransaction = () => {
 
   const clearExpenseForm = () => {
     setExpenseFormData({
+      userId: user.id,
       date: new Date(),
       amount: "",
       category: "",
@@ -56,9 +62,8 @@ const CreateTransaction = () => {
         title: "Successfully Saved Income",
       });
 
-      console.log(incomeFormData);
-
       clearIncomeForm();
+      fetchTransactions();
     } catch (error) {
       setErrorIncome(error.response?.data?.message || "An error occurred");
     } finally {
@@ -76,9 +81,8 @@ const CreateTransaction = () => {
         title: "Successfully Saved Expense",
       });
 
-      console.log(expenseFormData);
-
       clearExpenseForm();
+      fetchTransactions();
     } catch (error) {
       setErrorExpense(error.response?.data?.message || "An error occurred");
     } finally {
@@ -96,6 +100,8 @@ const CreateTransaction = () => {
       <TabsContent value="income">
         <IncomeForm
           formData={incomeFormData}
+          error={errorIncome}
+          laoding={loadingIncome}
           onChange={setIncomeFormData}
           onSubmit={handleIncomeSubmit}
         />

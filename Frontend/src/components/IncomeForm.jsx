@@ -28,7 +28,9 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 
-const IncomeForm = ({ formData, onChange, onSubmit }) => {
+import { Spinner2 } from "./Spinners";
+
+const IncomeForm = ({ formData, onChange, onSubmit, error, loading }) => {
   const handleDateChange = (selectedDate) => {
     onChange({ ...formData, date: selectedDate });
   };
@@ -126,16 +128,26 @@ const IncomeForm = ({ formData, onChange, onSubmit }) => {
           <div className="grid w-full gap-1.5 mt-1">
             <Label htmlFor="income-notes">Note</Label>
             <Textarea
-              placeholder="Type your message here."
+              placeholder="Type a note here."
               id="income-notes"
               name="notes"
               value={formData.notes}
               onChange={handleInputChange}
             />
           </div>
+
+          <p className="text-red-600 text-sm text-center">
+            {error ? error : null}
+          </p>
         </CardContent>
         <CardFooter>
-          <Button type="submit">Save Income</Button>
+          {loading ? (
+            <div>
+              <Spinner2 size={10} />
+            </div>
+          ) : (
+            <Button type="submit">Save Income</Button>
+          )}
         </CardFooter>
       </Card>
     </form>

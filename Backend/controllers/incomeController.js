@@ -11,9 +11,23 @@ const getAllIncome = async (req, res) => {
   }
 };
 
+const getAllUserIncome = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const income = await Income.find({ userId: userId });
+    res.status(200).json({ income });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // add Income and also save the data in Transaction Table
 const addIncome = async (req, res) => {
   const { userId, amount, category, date, notes } = req.body;
+
+  if (!amount || !category || !date) {
+    return res.status(400).json({ message: "Please input required fields" });
+  }
 
   // session for transaction handling
   const session = await mongoose.startSession();
@@ -65,7 +79,7 @@ const addIncome = async (req, res) => {
 // update Income and update also in transaction
 const updateIncome = async (req, res) => {
   const { incomeId } = req.params;
-  const { amount, category, date, notes } = req.body;
+  const { amount, category, date,  notes } = req.body;
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -150,4 +164,10 @@ const deleteIncome = async (req, res) => {
   }
 };
 
-module.exports = { getAllIncome, addIncome, updateIncome, deleteIncome };
+module.exports = {
+  getAllIncome,
+  getAllUserIncome,
+  addIncome,
+  updateIncome,
+  deleteIncome,
+};

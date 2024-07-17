@@ -1,8 +1,6 @@
 const express = require("express");
 const app = new express();
 
-const Transaction = require("./models/transaction.js");
-
 require("dotenv").config();
 
 // parse JSON body and urlencode middleware
@@ -13,21 +11,13 @@ const userRoutes = require("./routes/user");
 const incomeRoutes = require("./routes/income");
 const expenseRoutes = require("./routes/expense");
 const budgetRoutes = require("./routes/budget");
+const transactionRoutes = require("./routes/transaction");
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/income", incomeRoutes);
 app.use("/api/v1/expense", expenseRoutes);
 app.use("/api/v1/budget", budgetRoutes);
-
-// view all transaction
-app.get("/api/v1/transactions", async (req, res) => {
-  try {
-    const transactions = await Transaction.find();
-    res.status(200).json({ transactions });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
+app.use("/api/v1/transaction", transactionRoutes);
 
 // db connection and port listener
 const connectDB = require("./database/connect.js");

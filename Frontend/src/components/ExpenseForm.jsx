@@ -28,19 +28,23 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 
-const ExpenseForm = ({ onSubmit }) => {
-  const [date, setDate] = useState(new Date());
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
-  const [notes, setNotes] = useState("");
-
+const ExpenseForm = ({ formData, onChange, onSubmit, error, loading }) => {
   const handleDateChange = (selectedDate) => {
-    setDate(selectedDate);
+    onChange({ ...formData, date: selectedDate });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    onChange({ ...formData, [name]: value });
+  };
+
+  const handleCategoryChange = (value) => {
+    onChange({ ...formData, category: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(date, amount, category, notes);
+    onSubmit();
   };
 
   return (
@@ -53,24 +57,28 @@ const ExpenseForm = ({ onSubmit }) => {
         <CardContent className="space-y-2">
           <div className="flex flex-col space-y-1">
             <Label>Date</Label>
-            <Popover id="expense-date">
+            <Popover id="income-date">
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
                   className={cn(
                     "justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
+                    !formData.date && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  {formData.date ? (
+                    format(formData.date, "PPP")
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={date}
-                  onSelect={(date) => handleDateChange(date)}
+                  selected={formData.date}
+                  onSelect={handleDateChange}
                   initialFocus
                 />
               </PopoverContent>
@@ -85,8 +93,8 @@ const ExpenseForm = ({ onSubmit }) => {
                 name="amount"
                 type="number"
                 placeholder="10,000"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                value={formData.amount}
+                onChange={handleInputChange}
                 required
               />
             </div>
@@ -95,8 +103,8 @@ const ExpenseForm = ({ onSubmit }) => {
               <Label>Category</Label>
               <Select
                 id="expense-category"
-                defaultValue={category}
-                onValueChange={(value) => setCategory(value)}
+                value={formData.category}
+                onValueChange={handleCategoryChange}
                 required
               >
                 <SelectTrigger className="w-[180px]">
@@ -124,16 +132,26 @@ const ExpenseForm = ({ onSubmit }) => {
           <div className="grid w-full gap-1.5 mt-1">
             <Label htmlFor="expense-notes">Note</Label>
             <Textarea
-              placeholder="Type your message here."
+              placeholder="Type a note here."
               id="expense-notes"
               name="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              value={formData.notes}
+              onChange={handleInputChange}
             />
           </div>
+
+          <p className="text-red-600 text-sm text-center">
+            {error ? error : null}
+          </p>
         </CardContent>
         <CardFooter>
-          <Button type="submit">Save Expense</Button>
+          {loading ? (
+            <div>
+              <Spinner2 size={10} />
+            </div>
+          ) : (
+            <Button type="submit">Save Expense</Button>
+          )}
         </CardFooter>
       </Card>
     </form>

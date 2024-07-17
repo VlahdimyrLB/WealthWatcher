@@ -11,6 +11,16 @@ const getAllExpense = async (req, res) => {
   }
 };
 
+const getAllUserExpense = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const expense = await Expense.find({ userId: userId });
+    res.status(200).json({ expense });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const addExpense = async (req, res) => {
   const { userId, amount, category, date, notes } = req.body;
 
@@ -144,4 +154,10 @@ const deleteExpense = async (req, res) => {
   }
 };
 
-module.exports = { getAllExpense, addExpense, updateExpense, deleteExpense };
+module.exports = {
+  getAllExpense,
+  getAllUserExpense,
+  addExpense,
+  updateExpense,
+  deleteExpense,
+};
