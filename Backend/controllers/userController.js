@@ -83,7 +83,7 @@ const getMe = async (req, res) => {
     // Generate token for the current user
     const token = generateToken(req.user.id);
 
-    res.status(200).json({ id: _id, name, username, token });
+    res.status(200).json({ _id: _id, name, username, token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

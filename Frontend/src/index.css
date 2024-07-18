@@ -98,3 +98,21 @@ body,
 .ListItemEven {
   background-color: #f8f8f0;
 }
+
+/* styles/customScrollbar.css */
+/* Style the scrollbar */
+::-webkit-scrollbar {
+  width: 8px; /* width of the scrollbar */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175); /* scrollbar handle color */
+  border-radius: 4px; /* roundness of the scrollbar handle */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgba(209, 213, 219); /* scrollbar track color */
+  /* roundness of the scrollbar track */
+}

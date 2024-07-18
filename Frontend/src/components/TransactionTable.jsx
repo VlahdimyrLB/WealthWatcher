@@ -1,10 +1,22 @@
-import React, { useState } from "react";
-import { FixedSizeList as List } from "react-window";
+import React, { useState, useEffect } from "react";
+import { VariableSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 import Pagination from "./Pagination";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "./ui/separator";
 
 const TransactionTable = ({ transactions, loading }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [dataKey, setDataKey] = useState(Date.now()); // Key to force update
 
   const groupTransactionsByDate = (transactions) => {
     return transactions.reduce((acc, transaction) => {
@@ -39,34 +51,82 @@ const TransactionTable = ({ transactions, loading }) => {
 
   const groupedTransactions = groupTransactionsByDate(transactions);
 
+  // Update the data key to force re-render when transactions change
+  useEffect(() => {
+    setDataKey(Date.now());
+  }, [transactions]);
+
   const transactionDates = Object.keys(groupedTransactions);
+
+  const getItemSize = (index) => {
+    const day = groupedTransactions[transactionDates[index]];
+
+    // Calculate minimum height
+    let minHeight = 70;
+
+    // Calculate additional height based on transactions
+    if (day.transactions.length > 0) {
+      minHeight += day.transactions.length * 32;
+    }
+
+    return minHeight;
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("en-PH", {
+      style: "currency",
+      currency: "PHP",
+    }).format(amount);
+  };
 
   const renderRow = ({ index, style }) => {
     const day = groupedTransactions[transactionDates[index]];
+    const ddayDate = day.date;
+    const dateObj = new Date(ddayDate);
+
+    const dayOfWeek = dateObj.toLocaleString("en-US", { weekday: "short" });
+
+    const formattedDate = `${dayOfWeek.toUpperCase()} ${
+      dateObj.getMonth() + 1
+    }/${dateObj.getDate()}`;
 
     return (
-      <div key={index} className="border border-gray-500 mb-3" style={style}>
-        <div className="flex items-center justify-between p-2 bg-gray-100">
-          <div>{day.date}</div>
-          <div className="flex items-center justify-between space-x-2">
-            <div className="w-42">Total Income: ${day.totalIncome}</div>
-            <div className="w-42">Total Expense: ${day.totalExpense}</div>
+      <div
+        style={{ ...style, marginBottom: "10px" }}
+        className="border-b-2 border-gray-500 "
+      >
+        <div className="flex flex-row items-center justify-between p-2 py-3 ">
+          <div className="font-extrabold text-2xl w-1/4">{formattedDate}</div>
+          <div className="w-1/4"></div>
+          <div className="flex items-center justify-between space-x-2 w-2/4 text-lg text-end">
+            <div className="w-1/2 font-bold text-xl text-blue-700">
+              {formatCurrency(day.totalIncome)}
+            </div>
+            <div className="w-1/2 font-bold text-xl text-red-700">
+              {formatCurrency(day.totalExpense)}
+            </div>
           </div>
         </div>
         {day.transactions.map((transaction, idx) => (
           <div key={idx} className="flex items-center justify-between p-2">
-            <div>
-              {transaction.type}: {transaction.category}
+            <div className="w-1/4 font-bold text-md">
+              {/* {transaction.type}: */}
+              {transaction.category}
             </div>
-            <div className="flex items-center justify-between space-x-2">
-              <div className="w-32">
+            <div className="w-1/4">
+              {transaction.notes.length > 20
+                ? `${transaction.notes.substr(0, 20)}...`
+                : transaction.notes}
+            </div>
+            <div className="flex w-2/4 items-center justify-between space-x-2 text-end">
+              <div className="w-1/2 font-bold text-lg text-blue-700">
                 {transaction.type === "Income"
-                  ? `$${transaction.amount}`
+                  ? `${formatCurrency(transaction.amount)}`
                   : null}
               </div>
-              <div className="w-32">
+              <div className="w-1/2 font-bold text-lg text-red-700">
                 {transaction.type === "Expense"
-                  ? `$${transaction.amount}`
+                  ? `${formatCurrency(transaction.amount)}`
                   : null}
               </div>
             </div>
@@ -78,29 +138,58 @@ const TransactionTable = ({ transactions, loading }) => {
 
   return (
     <section>
-      <div className="mt-10 flex justify-between">
-        <h2>
-          Total Income:
-          {Object.values(groupedTransactions).reduce(
-            (sum, day) => sum + day.totalIncome,
-            0
-          )}
-        </h2>
-        <h2>
-          Total Expense:
-          {Object.values(groupedTransactions).reduce(
-            (sum, day) => sum + day.totalExpense,
-            0
-          )}
-        </h2>
-        <h2>
-          Net Total:
-          {Object.values(groupedTransactions).reduce(
-            (sum, day) => sum + day.totalIncome - day.totalExpense,
-            0
-          )}
-        </h2>
-      </div>
+      <Card className="lg:max-w-3xl mx-auto" x-chunk="charts-01-chunk-4">
+        <CardFooter className="flex flex-row border-t p-4">
+          <div className="flex w-full items-center gap-2">
+            <div className="grid flex-1 auto-rows-min gap-0.5">
+              <div className="text-xs text-muted-foreground">
+                Net Total / Balance
+              </div>
+              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                {formatCurrency(
+                  Object.values(groupedTransactions).reduce(
+                    (sum, day) => sum + day.totalIncome - day.totalExpense,
+                    0
+                  )
+                )}
+                <span className="text-sm font-normal text-muted-foreground">
+                  php
+                </span>
+              </div>
+            </div>
+            <Separator orientation="vertical" className="mx-2 h-10 w-px" />
+            <div className="grid flex-1 auto-rows-min gap-0.5">
+              <div className="text-xs text-muted-foreground">Total Income</div>
+              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                {formatCurrency(
+                  Object.values(groupedTransactions).reduce(
+                    (sum, day) => sum + day.totalIncome,
+                    0
+                  )
+                )}
+                <span className="text-sm font-normal text-muted-foreground">
+                  php
+                </span>
+              </div>
+            </div>
+            <Separator orientation="vertical" className="mx-2 h-10 w-px" />
+            <div className="grid flex-1 auto-rows-min gap-0.5">
+              <div className="text-xs text-muted-foreground">Total Expense</div>
+              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                {formatCurrency(
+                  Object.values(groupedTransactions).reduce(
+                    (sum, day) => sum + day.totalExpense,
+                    0
+                  )
+                )}
+                <span className="text-sm font-normal text-muted-foreground">
+                  php
+                </span>
+              </div>
+            </div>
+          </div>
+        </CardFooter>
+      </Card>
 
       <Pagination
         currentMonth={currentMonth}
@@ -109,21 +198,23 @@ const TransactionTable = ({ transactions, loading }) => {
           setCurrentMonth(month);
           setCurrentYear(year);
         }}
+        className="my-5"
       />
 
-      <div>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <List
-            height={800}
-            itemCount={transactionDates.length}
-            itemSize={100}
-            width={"80%"}
-          >
-            {renderRow}
-          </List>
-        )}
+      <div style={{ height: 400, width: "100%" }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <List
+              key={dataKey} // Key to force update
+              height={height}
+              itemCount={transactionDates.length}
+              itemSize={getItemSize}
+              width={width}
+            >
+              {renderRow}
+            </List>
+          )}
+        </AutoSizer>
       </div>
     </section>
   );

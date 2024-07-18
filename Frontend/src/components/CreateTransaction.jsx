@@ -17,7 +17,7 @@ const CreateTransaction = ({ fetchTransactions }) => {
   const [errorExpense, setErrorExpense] = useState(null);
 
   const [incomeFormData, setIncomeFormData] = useState({
-    userId: user.id,
+    userId: user._id,
     date: new Date(),
     amount: "",
     category: "",
@@ -25,7 +25,7 @@ const CreateTransaction = ({ fetchTransactions }) => {
   });
 
   const [expenseFormData, setExpenseFormData] = useState({
-    userId: user.id,
+    userId: user._id,
     date: new Date(),
     amount: "",
     category: "",
@@ -34,7 +34,7 @@ const CreateTransaction = ({ fetchTransactions }) => {
 
   const clearIncomeForm = () => {
     setIncomeFormData({
-      userId: user.id,
+      userId: user._id,
       date: new Date(),
       amount: "",
       category: "",
@@ -44,7 +44,7 @@ const CreateTransaction = ({ fetchTransactions }) => {
 
   const clearExpenseForm = () => {
     setExpenseFormData({
-      userId: user.id,
+      userId: user._id,
       date: new Date(),
       amount: "",
       category: "",
