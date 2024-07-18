@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "./ui/separator";
 
 const TransactionTable = ({ transactions, loading }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -137,29 +138,58 @@ const TransactionTable = ({ transactions, loading }) => {
 
   return (
     <section>
-      <div className="mt-10 flex justify-between">
-        <h2>
-          Total Income:{" "}
-          {Object.values(groupedTransactions).reduce(
-            (sum, day) => sum + day.totalIncome,
-            0
-          )}
-        </h2>
-        <h2>
-          Total Expense:{" "}
-          {Object.values(groupedTransactions).reduce(
-            (sum, day) => sum + day.totalExpense,
-            0
-          )}
-        </h2>
-        <h2>
-          Net Total:{" "}
-          {Object.values(groupedTransactions).reduce(
-            (sum, day) => sum + day.totalIncome - day.totalExpense,
-            0
-          )}
-        </h2>
-      </div>
+      <Card className="lg:max-w-3xl mx-auto" x-chunk="charts-01-chunk-4">
+        <CardFooter className="flex flex-row border-t p-4">
+          <div className="flex w-full items-center gap-2">
+            <div className="grid flex-1 auto-rows-min gap-0.5">
+              <div className="text-xs text-muted-foreground">
+                Net Total / Balance
+              </div>
+              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                {formatCurrency(
+                  Object.values(groupedTransactions).reduce(
+                    (sum, day) => sum + day.totalIncome - day.totalExpense,
+                    0
+                  )
+                )}
+                <span className="text-sm font-normal text-muted-foreground">
+                  php
+                </span>
+              </div>
+            </div>
+            <Separator orientation="vertical" className="mx-2 h-10 w-px" />
+            <div className="grid flex-1 auto-rows-min gap-0.5">
+              <div className="text-xs text-muted-foreground">Total Income</div>
+              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                {formatCurrency(
+                  Object.values(groupedTransactions).reduce(
+                    (sum, day) => sum + day.totalIncome,
+                    0
+                  )
+                )}
+                <span className="text-sm font-normal text-muted-foreground">
+                  php
+                </span>
+              </div>
+            </div>
+            <Separator orientation="vertical" className="mx-2 h-10 w-px" />
+            <div className="grid flex-1 auto-rows-min gap-0.5">
+              <div className="text-xs text-muted-foreground">Total Expense</div>
+              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                {formatCurrency(
+                  Object.values(groupedTransactions).reduce(
+                    (sum, day) => sum + day.totalExpense,
+                    0
+                  )
+                )}
+                <span className="text-sm font-normal text-muted-foreground">
+                  php
+                </span>
+              </div>
+            </div>
+          </div>
+        </CardFooter>
+      </Card>
 
       <Pagination
         currentMonth={currentMonth}
