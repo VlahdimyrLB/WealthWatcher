@@ -70,7 +70,7 @@
 
 html {
   font-family: sans-serif;
-  font-size: 12px;
+  font-size: 16px; /* Adjusted from 12px to 16px */
 }
 
 body {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { VariableSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import Pagination from "./Pagination";
+import { Spinner3 } from "./Spinners";
 
 import {
   Card,
@@ -62,11 +63,11 @@ const TransactionTable = ({ transactions, loading }) => {
     const day = groupedTransactions[transactionDates[index]];
 
     // Calculate minimum height
-    let minHeight = 70;
+    let minHeight = 100;
 
     // Calculate additional height based on transactions
     if (day.transactions.length > 0) {
-      minHeight += day.transactions.length * 32;
+      minHeight += day.transactions.length * 40;
     }
 
     return minHeight;
@@ -138,84 +139,94 @@ const TransactionTable = ({ transactions, loading }) => {
 
   return (
     <section>
-      <Card className="lg:max-w-3xl mx-auto" x-chunk="charts-01-chunk-4">
-        <CardFooter className="flex flex-row border-t p-4">
-          <div className="flex w-full items-center gap-2">
-            <div className="grid flex-1 auto-rows-min gap-0.5">
-              <div className="text-xs text-muted-foreground">
-                Net Total / Balance
+      {!loading ? (
+        <>
+          <Card className="lg:max-w-3xl mx-auto" x-chunk="charts-01-chunk-4">
+            <CardFooter className="flex flex-row border-t p-4">
+              <div className="flex w-full items-center gap-2">
+                <div className="grid flex-1 auto-rows-min gap-0.5">
+                  <div className="text-xs text-muted-foreground">
+                    Net Total / Balance
+                  </div>
+                  <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                    {formatCurrency(
+                      Object.values(groupedTransactions).reduce(
+                        (sum, day) => sum + day.totalIncome - day.totalExpense,
+                        0
+                      )
+                    )}
+                    <span className="text-sm font-normal text-muted-foreground">
+                      {/* php */}
+                    </span>
+                  </div>
+                </div>
+                <Separator orientation="vertical" className="mx-2 h-10 w-px" />
+                <div className="grid flex-1 auto-rows-min gap-0.5">
+                  <div className="text-xs text-muted-foreground">
+                    Total Income
+                  </div>
+                  <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                    {formatCurrency(
+                      Object.values(groupedTransactions).reduce(
+                        (sum, day) => sum + day.totalIncome,
+                        0
+                      )
+                    )}
+                    <span className="text-sm font-normal text-muted-foreground">
+                      {/* php */}
+                    </span>
+                  </div>
+                </div>
+                <Separator orientation="vertical" className="mx-2 h-10 w-px" />
+                <div className="grid flex-1 auto-rows-min gap-0.5">
+                  <div className="text-xs text-muted-foreground">
+                    Total Expense
+                  </div>
+                  <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                    {formatCurrency(
+                      Object.values(groupedTransactions).reduce(
+                        (sum, day) => sum + day.totalExpense,
+                        0
+                      )
+                    )}
+                    <span className="text-sm font-normal text-muted-foreground">
+                      {/* php */}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-                {formatCurrency(
-                  Object.values(groupedTransactions).reduce(
-                    (sum, day) => sum + day.totalIncome - day.totalExpense,
-                    0
-                  )
-                )}
-                <span className="text-sm font-normal text-muted-foreground">
-                  php
-                </span>
-              </div>
-            </div>
-            <Separator orientation="vertical" className="mx-2 h-10 w-px" />
-            <div className="grid flex-1 auto-rows-min gap-0.5">
-              <div className="text-xs text-muted-foreground">Total Income</div>
-              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-                {formatCurrency(
-                  Object.values(groupedTransactions).reduce(
-                    (sum, day) => sum + day.totalIncome,
-                    0
-                  )
-                )}
-                <span className="text-sm font-normal text-muted-foreground">
-                  php
-                </span>
-              </div>
-            </div>
-            <Separator orientation="vertical" className="mx-2 h-10 w-px" />
-            <div className="grid flex-1 auto-rows-min gap-0.5">
-              <div className="text-xs text-muted-foreground">Total Expense</div>
-              <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-                {formatCurrency(
-                  Object.values(groupedTransactions).reduce(
-                    (sum, day) => sum + day.totalExpense,
-                    0
-                  )
-                )}
-                <span className="text-sm font-normal text-muted-foreground">
-                  php
-                </span>
-              </div>
-            </div>
+            </CardFooter>
+          </Card>
+
+          <Pagination
+            currentMonth={currentMonth}
+            currentYear={currentYear}
+            onMonthChange={(month, year) => {
+              setCurrentMonth(month);
+              setCurrentYear(year);
+            }}
+            className="my-5"
+          />
+
+          <div style={{ height: 350, width: "100%" }}>
+            <AutoSizer>
+              {({ height, width }) => (
+                <List
+                  key={dataKey} // Key to force update
+                  height={height}
+                  itemCount={transactionDates.length}
+                  itemSize={getItemSize}
+                  width={width}
+                >
+                  {renderRow}
+                </List>
+              )}
+            </AutoSizer>
           </div>
-        </CardFooter>
-      </Card>
-
-      <Pagination
-        currentMonth={currentMonth}
-        currentYear={currentYear}
-        onMonthChange={(month, year) => {
-          setCurrentMonth(month);
-          setCurrentYear(year);
-        }}
-        className="my-5"
-      />
-
-      <div style={{ height: 400, width: "100%" }}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <List
-              key={dataKey} // Key to force update
-              height={height}
-              itemCount={transactionDates.length}
-              itemSize={getItemSize}
-              width={width}
-            >
-              {renderRow}
-            </List>
-          )}
-        </AutoSizer>
-      </div>
+        </>
+      ) : (
+        <Spinner3 />
+      )}
     </section>
   );
 };

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import TransactionTable from "@/components/TransactionTable";
 import CreateTransaction from "@/components/CreateTransaction";
-import { Link } from "react-router-dom";
-import axios from "axios";
 import { AuthContext } from "@/contexts/AuthContext";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 import {
   Breadcrumb,
@@ -19,21 +19,26 @@ const TransactionPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  console.log(user);
-
+  // Function to fetch transactions
   const fetchTransactions = async () => {
-    if (!user._id) {
-      return console.log("no user");
+    if (!user?._id) {
+      return console.log("No user ID available");
     }
 
     try {
-      const response = await axios.get(`/api/v1/transaction/user/${user._id}`);
+      const token = Cookies.get("token");
+      const response = await axios.get(`/api/v1/transaction/user/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       const sortedTransactions = response?.data?.transactions.sort(
         (a, b) => new Date(b.date) - new Date(a.date)
       );
       setTransactions(sortedTransactions);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching transactions:", error);
     } finally {
       setLoading(false);
     }
@@ -41,11 +46,11 @@ const TransactionPage = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, [user._id]);
+  }, [user?._id]);
 
   return (
     <section className="flex flex-col lg:flex-row">
-      <div className="lg:w-3/5 p-4 ">
+      <div className="lg:w-3/5 p-4">
         <div className="-mt-10 -ml-3">
           <div className="text-[17px] font-semibold opacity-80 mb-4">
             <Breadcrumb>
