@@ -6,8 +6,10 @@ const {
   getAllUserTransactions,
 } = require("../controllers/transactionController");
 
-router.route("/").get(getAllTransactions);
+const { protect } = require("../middleware/authMiddleware");
 
-router.route("/user/:userId").get(getAllUserTransactions);
+// Protected routes
+router.route("/").get(protect, getAllTransactions);
+router.route("/user/:userId").get(protect, getAllUserTransactions);
 
 module.exports = router;

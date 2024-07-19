@@ -1,6 +1,3 @@
-const express = require("express");
-const router = express.Router();
-
 const {
   registerUser,
   loginUser,
@@ -14,16 +11,19 @@ const {
 
 const { protect } = require("../middleware/authMiddleware");
 
-router.route("/").get(getAllUsers).post(createUser);
+const router = require("express").Router();
 
+// Public routes
 router.post("/register", registerUser);
-router.get("/getMe", protect, getMe);
 router.post("/login", loginUser);
 
+// Protected routes
+router.get("/getMe", protect, getMe);
+router.route("/").get(protect, getAllUsers).post(protect, createUser);
 router
   .route("/:userId")
-  .get(getSingleUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+  .get(protect, getSingleUser)
+  .patch(protect, updateUser)
+  .delete(protect, deleteUser);
 
 module.exports = router;
