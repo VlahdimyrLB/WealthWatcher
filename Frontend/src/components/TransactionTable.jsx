@@ -225,7 +225,7 @@ const TransactionTable = ({ transactions, loading }) => {
           </div>
         </>
       ) : (
-        <Spinner3 />
+        <Spinner3 size={15} />
       )}
     </section>
   );
