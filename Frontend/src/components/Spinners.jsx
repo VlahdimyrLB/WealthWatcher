@@ -1,31 +1,27 @@
 import React from "react";
 import { BeatLoader, PropagateLoader, ClipLoader } from "react-spinners";
 
-const override = {
-  display: "block",
-  margin: "100px auto",
-};
-
 const Spinner = ({ loading, size = 150 }) => {
   return (
-    <ClipLoader color="#123abc" loading={loading} css={override} size={size} />
+    <div className="flex items-center justify-center ">
+      <ClipLoader color="#123abc" loading={loading} size={size} />
+    </div>
   );
 };
 
 const Spinner2 = ({ loading, size = 150 }) => {
   return (
-    <BeatLoader color="#123abc" loading={loading} css={override} size={size} />
+    <div className="flex items-center justify-center ">
+      <BeatLoader color="#123abc" loading={loading} size={size} />
+    </div>
   );
 };
 
 const Spinner3 = ({ loading, size = 150 }) => {
   return (
-    <PropagateLoader
-      color="#123abc"
-      loading={loading}
-      css={override}
-      size={size}
-    />
+    <div className="flex items-center justify-center">
+      <PropagateLoader color="#123abc" loading={loading} size={size} />
+    </div>
   );
 };
 

@@ -8,7 +8,7 @@ const ProtectedRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <ClipLoader color="#123abc" loading={loading} size={50} />;
+    return;
   }
 
   if (!user) {

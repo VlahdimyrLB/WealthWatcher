@@ -103,7 +103,7 @@ const TransactionTable = ({ transactions, loading }) => {
             <div className="w-1/2 font-bold text-lg text-blue-700">
               {formatCurrency(day.totalIncome)}
             </div>
-            <div className="w-1/2 font-bold text-lg text-red-700">
+            <div className="w-1/2 font-bold text-xl text-red-700">
               {formatCurrency(day.totalExpense)}
             </div>
           </div>
