@@ -100,7 +100,7 @@ const TransactionTable = ({ transactions, loading }) => {
           <div className="font-extrabold text-2xl w-1/4">{formattedDate}</div>
           <div className="w-1/4"></div>
           <div className="flex items-center justify-between space-x-2 w-2/4 text-lg text-end">
-            <div className="w-1/2 font-bold text-xl text-blue-700">
+            <div className="w-1/2 font-bold text-lg text-blue-700">
               {formatCurrency(day.totalIncome)}
             </div>
             <div className="w-1/2 font-bold text-xl text-red-700">
@@ -120,12 +120,12 @@ const TransactionTable = ({ transactions, loading }) => {
                 : transaction.notes}
             </div>
             <div className="flex w-2/4 items-center justify-between space-x-2 text-end">
-              <div className="w-1/2 font-bold text-lg text-blue-700">
+              <div className="w-1/2 font-bold text-md text-blue-700">
                 {transaction.type === "Income"
                   ? `${formatCurrency(transaction.amount)}`
                   : null}
               </div>
-              <div className="w-1/2 font-bold text-lg text-red-700">
+              <div className="w-1/2 font-bold text-md text-red-700">
                 {transaction.type === "Expense"
                   ? `${formatCurrency(transaction.amount)}`
                   : null}
@@ -225,7 +225,7 @@ const TransactionTable = ({ transactions, loading }) => {
           </div>
         </>
       ) : (
-        <Spinner3 />
+        <Spinner3 size={15} />
       )}
     </section>
   );

@@ -8,7 +8,6 @@ import Cookies from "js-cookie";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -18,6 +17,7 @@ const TransactionPage = () => {
   const { user } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fadeIn, setFadeIn] = useState(false);
 
   // Function to fetch transactions
   const fetchTransactions = async () => {
@@ -46,11 +46,18 @@ const TransactionPage = () => {
 
   useEffect(() => {
     fetchTransactions();
+    setFadeIn(true);
   }, [user?._id]);
 
   return (
     <section className="flex flex-col lg:flex-row">
-      <div className="lg:w-3/5 p-4">
+      <div
+        className={`lg:w-3/5 p-4 transition-transform transition-opacity duration-1000 ease-out ${
+          fadeIn
+            ? "transform translate-y-0 opacity-100"
+            : "transform translate-y-10 opacity-0"
+        }`}
+      >
         <div className="-mt-10 -ml-3">
           <div className="text-[17px] font-semibold opacity-80 mb-4">
             <Breadcrumb>
@@ -67,7 +74,14 @@ const TransactionPage = () => {
 
         <TransactionTable transactions={transactions} loading={loading} />
       </div>
-      <div className="lg:w-2/5 p-4 flex items-center justify-center">
+
+      <div
+        className={`lg:w-2/5 p-4 flex justify-center transition-transform transition-opacity duration-1000 ease-out ${
+          fadeIn
+            ? "transform translate-x-0 opacity-100"
+            : "transform translate-x-10 opacity-0"
+        }`}
+      >
         <CreateTransaction fetchTransactions={fetchTransactions} />
       </div>
     </section>
