@@ -56,6 +56,8 @@ const CalendarPage = () => {
   const [expenseData, setExpenseData] = useState([]);
 
   const [toUpdateData, setToUpdateData] = useState({
+    _id: "",
+    transactionId: "",
     type: "",
     amount: "",
     date: "",
@@ -179,6 +181,8 @@ const CalendarPage = () => {
     console.log(transactionData.type);
 
     setToUpdateData({
+      _id: transactionData._id,
+      transactionId: transactionData.transactionId,
       type: transactionData.type,
       amount: transactionData.amount,
       date: new Date(transactionData.date),
@@ -239,10 +243,24 @@ const CalendarPage = () => {
     setIsOpen(false);
   };
 
+  const [fadeIn, setFadeIn] = useState(false);
+  useEffect(() => {
+    setFadeIn(true);
+  }, [user?._id]);
+
   return (
-    <div>
+    <div
+      className={`p-4 transition-transform transition-opacity duration-1000 ease-out ${
+        fadeIn
+          ? "transform translate-y-0 opacity-100"
+          : "transform translate-y-10 opacity-0"
+      }`}
+    >
       {loading ? (
-        <FullCalendar myEvents={events} onEventClick={handleEventClick} />
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-sm">Binding Calendar Data ...</p>
+          <Spinner2 size={15} />
+        </div>
       ) : (
         <FullCalendar myEvents={events} onEventClick={handleEventClick} />
       )}
@@ -261,6 +279,16 @@ const CalendarPage = () => {
           </DialogHeader>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
+              <div className="flex flex-col opacity-60 text-sm">
+                <div>
+                  <b>IncomeId: </b>
+                  {toUpdateData._id}
+                </div>
+                <div>
+                  <b>TransId: </b>
+                  {toUpdateData.transactionId}
+                </div>
+              </div>
               <div className="flex flex-col space-y-1">
                 <Label htmlFor="transaction-date">Date</Label>
                 <Popover id="transaction-date">
