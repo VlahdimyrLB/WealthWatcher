@@ -109,7 +109,11 @@ const TransactionTable = ({ transactions, loading }) => {
           </div>
         </div>
         {day.transactions.map((transaction, idx) => (
-          <div key={idx} className="flex items-center justify-between p-2">
+          <div
+            key={idx}
+            className="flex items-center justify-between p-2 hover:opacity-80 hover:bg-gray-300 rounded-md cursor-pointer"
+            onClick={() => alert(transaction._id)}
+          >
             <div className="w-1/4 font-bold text-md">
               {/* {transaction.type}: */}
               {transaction.category}

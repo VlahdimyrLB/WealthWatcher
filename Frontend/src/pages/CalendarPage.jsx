@@ -1,10 +1,9 @@
-// CalendarPage.js
 import React, { useEffect, useState, useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
-import FullCalendar from "../components/Calendar";
 import Cookies from "js-cookie";
 import axios from "axios";
-import TransactionDialog from "@/components/TransactionDialog";
+
+import { AuthContext } from "@/contexts/AuthContext";
+import FullCalendar from "../components/Calendar";
 
 import {
   Dialog,
@@ -12,30 +11,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-import { Spinner2 } from "@/components/Spinners";
-import { Skeleton } from "@/components/ui/skeleton";
-import { date } from "zod";
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-
-import { cn } from "@/lib/utils";
-
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
-import { Calendar } from "@/components/ui/calendar";
 
 import {
   Select,
@@ -45,16 +22,41 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
+import { cn } from "@/lib/utils";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+
+import { useToast } from "@/components/ui/use-toast";
+import { Spinner2 } from "@/components/Spinners";
+
 const CalendarPage = () => {
   const { user } = useContext(AuthContext);
   const { toast } = useToast();
+
   const [events, setEvents] = useState([]);
+
+  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
 
   const [incomeData, setIncomeData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
+
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [transactType, setTransactType] = useState();
 
   const [toUpdateData, setToUpdateData] = useState({
     _id: "",
@@ -65,10 +67,6 @@ const CalendarPage = () => {
     notes: "",
     category: "",
   });
-
-  const [categoryOptions, setCategoryOptions] = useState([]);
-
-  const [transactType, setTransactType] = useState();
 
   useEffect(() => {
     if (!user) {
@@ -84,19 +82,11 @@ const CalendarPage = () => {
         setIncomeData(response.data.income);
       } catch (error) {
         console.log("Error fetching income:", error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchIncome();
-  }, []);
-  // console.log(incomeData);
-
-  useEffect(() => {
-    if (!user) {
-      return console.log("No user ID available");
-    }
 
     const fetchExpense = async () => {
       try {
@@ -107,19 +97,11 @@ const CalendarPage = () => {
         setExpenseData(response.data.expense);
       } catch (error) {
         console.log("Error fetching expense:", error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchExpense();
-  }, []);
-  // console.log(expenseData);
-
-  useEffect(() => {
-    if (!user) {
-      return console.log("No user ID available");
-    }
 
     const fetchTransactionData = async () => {
       try {
@@ -159,13 +141,16 @@ const CalendarPage = () => {
         // });
       } catch (error) {
         console.log("Error fetching transactions:", error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
+    fetchIncome();
+    fetchExpense();
     fetchTransactionData();
-  }, [events]);
+  }, [events, user]);
 
   const handleEventClick = (clickInfo) => {
     // console.log(`Event ID: ${clickInfo.event.id}`);
@@ -255,9 +240,16 @@ const CalendarPage = () => {
       });
     } catch (error) {
       console.log(error.message);
+      setError(error.message);
     }
 
     setIsOpen(false);
+  };
+
+  const confirmDelete = () => {
+    if (window.confirm("Are you sure you want to delete this transaction?")) {
+      handleDelete();
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -275,14 +267,16 @@ const CalendarPage = () => {
         title: "Successfully Updated",
       });
     } catch (error) {
-      // setErrorIncome(error.response?.data?.message || "An error occurred");
+      setError(error.response?.data?.message || "An error occurred");
       console.log(error.message);
     }
 
     setIsOpen(false);
   };
 
+  // forda transition
   const [fadeIn, setFadeIn] = useState(false);
+
   useEffect(() => {
     setFadeIn(true);
   }, [user?._id]);
@@ -403,13 +397,19 @@ const CalendarPage = () => {
                   onChange={handleInputChange}
                 />
               </div>
+
+              <div>{error ? error : null}</div>
             </div>
-            <DialogFooter className="flex items-center justify-between">
-              <Button type="submit">Save changes</Button>
-              <Button variant="ghost" onClick={() => setIsOpen(false)}>
-                Close
+            <DialogFooter className="">
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={confirmDelete}
+              >
+                Delete
               </Button>
-              <Button onClick={handleDelete}>Delete</Button>
+
+              <Button type="submit">Save changes</Button>
             </DialogFooter>
           </form>
         </DialogContent>
