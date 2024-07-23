@@ -17,7 +17,7 @@ import { Separator } from "./ui/separator";
 const TransactionTable = ({ transactions, loading }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [dataKey, setDataKey] = useState(Date.now()); // Key to force update
+  const [dataKey, setDataKey] = useState(Date.now());
 
   const groupTransactionsByDate = (transactions) => {
     return transactions.reduce((acc, transaction) => {

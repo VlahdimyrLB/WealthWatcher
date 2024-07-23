@@ -50,7 +50,7 @@ const TransactionPage = () => {
   }, [user?._id]);
 
   return (
-    <section className="flex flex-col lg:flex-row">
+    <section className="flex flex-col-reverse pb-10 lg:flex-row">
       <div
         className={`lg:w-3/5 p-4 transition-transform transition-opacity duration-1000 ease-out ${
           fadeIn
@@ -58,7 +58,7 @@ const TransactionPage = () => {
             : "transform translate-y-10 opacity-0"
         }`}
       >
-        <div className="-mt-10 -ml-3">
+        <div className="lg:-mt-10 -ml-3">
           <div className="text-[17px] font-semibold opacity-80 mb-4">
             <Breadcrumb>
               <BreadcrumbList>

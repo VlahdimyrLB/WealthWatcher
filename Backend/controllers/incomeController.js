@@ -79,7 +79,7 @@ const addIncome = async (req, res) => {
 // update Income and update also in transaction
 const updateIncome = async (req, res) => {
   const { incomeId } = req.params;
-  const { amount, category, date,  notes } = req.body;
+  const { amount, category, date, notes } = req.body;
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -164,10 +164,104 @@ const deleteIncome = async (req, res) => {
   }
 };
 
+// Update transaction
+const updateIncomeByTransaction = async (req, res) => {
+  const { transactionId } = req.params;
+  const { amount, category, date, notes } = req.body;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Update transaction
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+      transactionId,
+      { amount, category, date, notes },
+      {
+        new: true,
+        session,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedTransaction) {
+      throw new Error("Transaction entry not found");
+    }
+
+    // If the transaction type is Income, update the corresponding Income entry
+    if (updatedTransaction.type === "Income") {
+      const updatedIncome = await Income.findByIdAndUpdate(
+        updatedTransaction._id,
+        { amount, category, date, notes },
+        {
+          new: true,
+          session,
+          runValidators: true,
+        }
+      );
+
+      if (!updatedIncome) {
+        throw new Error("Income entry not found");
+      }
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({
+      message: "Transaction updated successfully",
+      transaction: updatedTransaction,
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error(error);
+    res.status(500).json({ error: "Failed to update transaction" });
+  }
+};
+
+// Delete transaction
+const deleteIncomeByTransaction = async (req, res) => {
+  const { transactionId } = req.params;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const transactionEntry = await Transaction.findById(transactionId).session(
+      session
+    );
+
+    if (!transactionEntry) {
+      throw new Error("Transaction entry not found");
+    }
+
+    await Transaction.findByIdAndDelete(transactionId, { session });
+
+    if (transactionEntry.type === "Income") {
+      await Income.findByIdAndDelete(transactionEntry._id, { session });
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({
+      message: "Transaction deleted successfully",
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllIncome,
   getAllUserIncome,
   addIncome,
   updateIncome,
   deleteIncome,
+  updateIncomeByTransaction,
+  deleteIncomeByTransaction,
 };
