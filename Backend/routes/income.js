@@ -18,7 +18,7 @@ router.route("/").get(getAllIncome).post(addIncome);
 router.route("/:incomeId").patch(updateIncome).delete(deleteIncome);
 
 router
-  .route("/:transactionId")
+  .route("/transaction/:transactionId")
   .patch(updateIncomeByTransaction)
   .delete(deleteIncomeByTransaction);
 

@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-
+import { useToast } from "@/components/ui/use-toast";
 import { Calendar } from "@/components/ui/calendar";
 
 import {
@@ -47,6 +47,7 @@ import {
 
 const CalendarPage = () => {
   const { user } = useContext(AuthContext);
+  const { toast } = useToast();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,6 +67,8 @@ const CalendarPage = () => {
   });
 
   const [categoryOptions, setCategoryOptions] = useState([]);
+
+  const [transactType, setTransactType] = useState();
 
   useEffect(() => {
     if (!user) {
@@ -162,7 +165,7 @@ const CalendarPage = () => {
     };
 
     fetchTransactionData();
-  }, []);
+  }, [events]);
 
   const handleEventClick = (clickInfo) => {
     // console.log(`Event ID: ${clickInfo.event.id}`);
@@ -178,7 +181,7 @@ const CalendarPage = () => {
             (expense) => expense.transactionId === transactionId
           );
 
-    console.log(transactionData.type);
+    // console.log(transactionData.type);
 
     setToUpdateData({
       _id: transactionData._id,
@@ -189,6 +192,8 @@ const CalendarPage = () => {
       notes: transactionData.notes,
       category: transactionData.category,
     });
+
+    setTransactType(transactionType);
 
     // Set category options based on transaction type
     const categories =
@@ -237,9 +242,43 @@ const CalendarPage = () => {
     setToUpdateData({ ...toUpdateData, category: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleDelete = async (e) => {
     e.preventDefault();
-    // Add your update logic here
+
+    try {
+      await axios.delete(
+        `/api/v1/income/transaction/${toUpdateData.transactionId}`
+      );
+
+      toast({
+        title: "Deleted Successfully",
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+
+    setIsOpen(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      transactType === "Income"
+        ? await axios.patch(`/api/v1/income/${toUpdateData._id}`, toUpdateData)
+        : await axios.patch(
+            `/api/v1/expense/${toUpdateData._id}`,
+            toUpdateData
+          );
+
+      toast({
+        title: "Successfully Updated",
+      });
+    } catch (error) {
+      // setErrorIncome(error.response?.data?.message || "An error occurred");
+      console.log(error.message);
+    }
+
     setIsOpen(false);
   };
 
@@ -250,7 +289,7 @@ const CalendarPage = () => {
 
   return (
     <div
-      className={`p-4 transition-transform transition-opacity duration-1000 ease-out ${
+      className={`p-4 transition-transform  duration-1000 ease-out ${
         fadeIn
           ? "transform translate-y-0 opacity-100"
           : "transform translate-y-10 opacity-0"
@@ -370,6 +409,7 @@ const CalendarPage = () => {
               <Button variant="ghost" onClick={() => setIsOpen(false)}>
                 Close
               </Button>
+              <Button onClick={handleDelete}>Delete</Button>
             </DialogFooter>
           </form>
         </DialogContent>
