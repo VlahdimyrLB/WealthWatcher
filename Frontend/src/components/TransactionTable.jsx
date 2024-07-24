@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "./ui/separator";
 
-const TransactionTable = ({ transactions, loading }) => {
+const TransactionTable = ({ transactions, loading, setToUpdateData }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [dataKey, setDataKey] = useState(Date.now());
@@ -112,7 +112,7 @@ const TransactionTable = ({ transactions, loading }) => {
           <div
             key={idx}
             className="flex items-center justify-between p-2 hover:opacity-80 hover:bg-gray-300 rounded-md cursor-pointer"
-            onClick={() => alert(transaction._id)}
+            onClick={() => setToUpdateData(transaction)}
           >
             <div className="w-1/4 font-bold text-md">
               {/* {transaction.type}: */}

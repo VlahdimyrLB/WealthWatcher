@@ -180,8 +180,8 @@ const updateExpenseByTransaction = async (req, res) => {
 
     // If the transaction type is Expense, update the corresponding expense entry
     if (updatedTransaction.type === "Expense") {
-      const updatedExpense = await Expense.findByIdAndUpdate(
-        updatedTransaction._id,
+      const updatedExpense = await Expense.findOneAndUpdate(
+        { transactionId: updatedTransaction._id },
         { amount, category, date, notes },
         {
           new: true,
@@ -229,7 +229,10 @@ const deleteExpenseByTransaction = async (req, res) => {
     await Transaction.findByIdAndDelete(transactionId, { session });
 
     if (transactionEntry.type === "Expense") {
-      await Expense.findByIdAndDelete(transactionEntry._id, { session });
+      await Expense.findOneAndUpdate(
+        { transactionId: updatedTransaction._id },
+        { session }
+      );
     }
 
     await session.commitTransaction();

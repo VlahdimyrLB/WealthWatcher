@@ -28,7 +28,16 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 
-const ExpenseForm = ({ formData, onChange, onSubmit, error, loading }) => {
+import { Spinner2 } from "./Spinners";
+
+const ExpenseForm = ({
+  formData,
+  onChange,
+  onSubmit,
+  error,
+  loading,
+  isUpdate,
+}) => {
   const handleDateChange = (selectedDate) => {
     onChange({ ...formData, date: selectedDate });
   };
@@ -150,7 +159,9 @@ const ExpenseForm = ({ formData, onChange, onSubmit, error, loading }) => {
               <Spinner2 size={10} />
             </div>
           ) : (
-            <Button type="submit">Save Expense</Button>
+            <Button type="submit">
+              {isUpdate ? "Update Expense" : "Save Expense"}
+            </Button>
           )}
         </CardFooter>
       </Card>

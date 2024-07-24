@@ -30,7 +30,14 @@ import { cn } from "@/lib/utils";
 
 import { Spinner2 } from "./Spinners";
 
-const IncomeForm = ({ formData, onChange, onSubmit, error, loading }) => {
+const IncomeForm = ({
+  formData,
+  onChange,
+  onSubmit,
+  error,
+  loading,
+  isUpdate,
+}) => {
   const handleDateChange = (selectedDate) => {
     onChange({ ...formData, date: selectedDate });
   };
@@ -146,7 +153,9 @@ const IncomeForm = ({ formData, onChange, onSubmit, error, loading }) => {
               <Spinner2 size={10} />
             </div>
           ) : (
-            <Button type="submit">Save Income</Button>
+            <Button type="submit">
+              {isUpdate ? "Update Income" : "Save Income"}
+            </Button>
           )}
         </CardFooter>
       </Card>

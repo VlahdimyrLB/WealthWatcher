@@ -19,6 +19,9 @@ const TransactionPage = () => {
   const [loading, setLoading] = useState(true);
   const [fadeIn, setFadeIn] = useState(false);
 
+  //for data update to be passed in create transaction and
+  const [toUpdateData, setToUpdateData] = useState(null);
+
   // Function to fetch transactions
   const fetchTransactions = async () => {
     if (!user?._id) {
@@ -49,6 +52,8 @@ const TransactionPage = () => {
     setFadeIn(true);
   }, [user?._id]);
 
+  console.log(toUpdateData);
+
   return (
     <section className="flex flex-col-reverse pb-10 lg:flex-row">
       <div
@@ -72,7 +77,12 @@ const TransactionPage = () => {
           </div>
         </div>
 
-        <TransactionTable transactions={transactions} loading={loading} />
+        <TransactionTable
+          transactions={transactions}
+          toUpdateData={toUpdateData}
+          setToUpdateData={setToUpdateData}
+          loading={loading}
+        />
       </div>
 
       <div
@@ -82,7 +92,10 @@ const TransactionPage = () => {
             : "transform translate-x-10 opacity-0"
         }`}
       >
-        <CreateTransaction fetchTransactions={fetchTransactions} />
+        <CreateTransaction
+          fetchTransactions={fetchTransactions}
+          toUpdateData={toUpdateData}
+        />
       </div>
     </section>
   );
