@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const UserCard = ({ cardTitle, cardDescription, cardContent, buttonName }) => {
-  const { loading } = useContext(AuthContext); // Access the login function from context
+  const { loading } = useContext(AuthContext);
 
   return (
     <section className="flex items-center justify-center">

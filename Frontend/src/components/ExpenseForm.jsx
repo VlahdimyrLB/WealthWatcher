@@ -37,6 +37,7 @@ const ExpenseForm = ({
   error,
   loading,
   isUpdate,
+  handleDelete,
 }) => {
   const handleDateChange = (selectedDate) => {
     onChange({ ...formData, date: selectedDate });
@@ -54,6 +55,12 @@ const ExpenseForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit();
+  };
+
+  const confirmDelete = () => {
+    if (window.confirm("Are you sure you want to delete this transaction?")) {
+      handleDelete();
+    }
   };
 
   return (
@@ -159,9 +166,23 @@ const ExpenseForm = ({
               <Spinner2 size={10} />
             </div>
           ) : (
-            <Button type="submit">
-              {isUpdate ? "Update Expense" : "Save Expense"}
-            </Button>
+            <>
+              {!isUpdate ? (
+                <Button type="submit">Save Income</Button>
+              ) : (
+                <div>
+                  <Button type="submit">Update Income</Button>
+                  <Button
+                    variant="destructive"
+                    type="button"
+                    className="mx-3"
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </CardFooter>
       </Card>

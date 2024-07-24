@@ -229,10 +229,7 @@ const deleteExpenseByTransaction = async (req, res) => {
     await Transaction.findByIdAndDelete(transactionId, { session });
 
     if (transactionEntry.type === "Expense") {
-      await Expense.findOneAndUpdate(
-        { transactionId: updatedTransaction._id },
-        { session }
-      );
+      await Expense.findByIdAndDelete(transactionEntry._id, { session });
     }
 
     await session.commitTransaction();

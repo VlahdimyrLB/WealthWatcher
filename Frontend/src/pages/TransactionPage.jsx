@@ -57,7 +57,7 @@ const TransactionPage = () => {
   return (
     <section className="flex flex-col-reverse pb-10 lg:flex-row">
       <div
-        className={`lg:w-3/5 p-4 transition-transform transition-opacity duration-1000 ease-out ${
+        className={`lg:w-3/5 p-4 transition-transform  duration-1000 ease-out ${
           fadeIn
             ? "transform translate-y-0 opacity-100"
             : "transform translate-y-10 opacity-0"
@@ -86,7 +86,7 @@ const TransactionPage = () => {
       </div>
 
       <div
-        className={`lg:w-2/5 p-4 flex justify-center transition-transform transition-opacity duration-1000 ease-out ${
+        className={`lg:w-2/5 p-4 flex justify-center transition-transform duration-1000 ease-out ${
           fadeIn
             ? "transform translate-x-0 opacity-100"
             : "transform translate-x-10 opacity-0"

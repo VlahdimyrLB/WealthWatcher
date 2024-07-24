@@ -239,10 +239,7 @@ const deleteIncomeByTransaction = async (req, res) => {
     await Transaction.findByIdAndDelete(transactionId, { session });
 
     if (transactionEntry.type === "Income") {
-      await Income.findOneAndUpdate(
-        { transactionId: updatedTransaction._id },
-        { session }
-      );
+      await Income.findByIdAndDelete(transactionEntry._id, { session });
     }
 
     await session.commitTransaction();

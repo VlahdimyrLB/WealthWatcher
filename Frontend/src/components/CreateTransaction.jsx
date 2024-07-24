@@ -108,6 +108,31 @@ const CreateTransaction = ({ fetchTransactions, toUpdateData }) => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!toUpdateData) {
+      toast({ title: "No transaction selected for deletion", status: "error" });
+      return;
+    }
+
+    try {
+      if (toUpdateData.type === "Income") {
+        await axios.delete(`/api/v1/income/transaction/${toUpdateData._id}`);
+        toast({ title: "Income deleted successfully" });
+      } else if (toUpdateData.type === "Expense") {
+        await axios.delete(`/api/v1/expense/transaction/${toUpdateData._id}`);
+        toast({ title: "Expense deleted successfully" });
+      }
+      // Fetch transactions after deletion
+      fetchTransactions();
+    } catch (error) {
+      console.error("Delete error: ", error.message);
+      toast({
+        title: error.response?.data?.message || "Error deleting transaction",
+        status: "error",
+      });
+    }
+  };
+
   useEffect(() => {
     if (toUpdateData) {
       setActiveTab(toUpdateData.type.toLowerCase());
@@ -150,6 +175,7 @@ const CreateTransaction = ({ fetchTransactions, toUpdateData }) => {
           onChange={setIncomeFormData}
           onSubmit={handleIncomeSubmit}
           isUpdate={isUpdate}
+          handleDelete={handleDelete}
         />
       </TabsContent>
 
@@ -161,6 +187,7 @@ const CreateTransaction = ({ fetchTransactions, toUpdateData }) => {
           onChange={setExpenseFormData}
           onSubmit={handleExpenseSubmit}
           isUpdate={isUpdate}
+          handleDelete={handleDelete}
         />
       </TabsContent>
     </Tabs>
