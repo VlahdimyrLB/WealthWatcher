@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import IncomeForm from "./IncomeForm";
@@ -6,7 +6,7 @@ import ExpenseForm from "./ExpenseForm";
 import { useToast } from "@/components/ui/use-toast";
 import { AuthContext } from "@/contexts/AuthContext";
 
-const CreateTransaction = ({ fetchTransactions }) => {
+const CreateTransaction = ({ fetchTransactions, toUpdateData }) => {
   const { toast } = useToast();
   const { user } = useContext(AuthContext);
 
@@ -15,6 +15,11 @@ const CreateTransaction = ({ fetchTransactions }) => {
 
   const [errorIncome, setErrorIncome] = useState(null);
   const [errorExpense, setErrorExpense] = useState(null);
+
+  const [activeTab, setActiveTab] = useState(
+    toUpdateData ? toUpdateData.type.toLowerCase() : "income"
+  );
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const [incomeFormData, setIncomeFormData] = useState({
     userId: user._id,
@@ -56,16 +61,23 @@ const CreateTransaction = ({ fetchTransactions }) => {
     setLoadingIncome(true);
 
     try {
-      await axios.post("/api/v1/income", incomeFormData);
-
-      toast({
-        title: "Successfully Saved Income",
-      });
+      if (toUpdateData && toUpdateData.type === "Income") {
+        await axios.patch(
+          `/api/v1/income/transaction/${toUpdateData._id}`,
+          incomeFormData
+        );
+        toast({ title: "Successfully Updated Income" });
+      } else {
+        await axios.post("/api/v1/income", incomeFormData);
+        toast({ title: "Successfully Saved Income" });
+      }
 
       clearIncomeForm();
+      setIsUpdate(false); // Reset the update state
       fetchTransactions();
     } catch (error) {
-      setErrorIncome(error.response?.data?.message || "An error occurred");
+      setErrorIncome(error.response?.data?.message);
+      console.log(error);
     } finally {
       setLoadingIncome(false);
     }
@@ -75,13 +87,19 @@ const CreateTransaction = ({ fetchTransactions }) => {
     setLoadingExpense(true);
 
     try {
-      await axios.post("/api/v1/expense", expenseFormData);
-
-      toast({
-        title: "Successfully Saved Expense",
-      });
+      if (toUpdateData && toUpdateData.type === "Expense") {
+        await axios.patch(
+          `/api/v1/expense/transaction/${toUpdateData._id}`,
+          expenseFormData
+        );
+        toast({ title: "Successfully Updated Expense" });
+      } else {
+        await axios.post("/api/v1/expense", expenseFormData);
+        toast({ title: "Successfully Saved Expense" });
+      }
 
       clearExpenseForm();
+      setIsUpdate(false); // Reset the update state
       fetchTransactions();
     } catch (error) {
       setErrorExpense(error.response?.data?.message || "An error occurred");
@@ -90,8 +108,60 @@ const CreateTransaction = ({ fetchTransactions }) => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!toUpdateData) {
+      toast({ title: "No transaction selected for deletion", status: "error" });
+      return;
+    }
+
+    try {
+      if (toUpdateData.type === "Income") {
+        await axios.delete(`/api/v1/income/transaction/${toUpdateData._id}`);
+        toast({ title: "Income deleted successfully" });
+      } else if (toUpdateData.type === "Expense") {
+        await axios.delete(`/api/v1/expense/transaction/${toUpdateData._id}`);
+        toast({ title: "Expense deleted successfully" });
+      }
+      // Fetch transactions after deletion
+      fetchTransactions();
+    } catch (error) {
+      console.error("Delete error: ", error.message);
+      toast({
+        title: error.response?.data?.message || "Error deleting transaction",
+        status: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (toUpdateData) {
+      setActiveTab(toUpdateData.type.toLowerCase());
+      if (toUpdateData.type === "Income") {
+        setIncomeFormData({
+          userId: user._id,
+          date: new Date(toUpdateData.date),
+          amount: toUpdateData.amount,
+          category: toUpdateData.category,
+          notes: toUpdateData.notes,
+        });
+
+        setIsUpdate(true);
+      } else {
+        setExpenseFormData({
+          userId: user._id,
+          date: new Date(toUpdateData.date),
+          amount: toUpdateData.amount,
+          category: toUpdateData.category,
+          notes: toUpdateData.notes,
+        });
+
+        setIsUpdate(true);
+      }
+    }
+  }, [toUpdateData, user._id]);
+
   return (
-    <Tabs defaultValue="income" className="w-[400px]">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-[400px]">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="income">Income</TabsTrigger>
         <TabsTrigger value="expense">Expense</TabsTrigger>
@@ -101,17 +171,23 @@ const CreateTransaction = ({ fetchTransactions }) => {
         <IncomeForm
           formData={incomeFormData}
           error={errorIncome}
-          laoding={loadingIncome}
+          loading={loadingIncome}
           onChange={setIncomeFormData}
           onSubmit={handleIncomeSubmit}
+          isUpdate={isUpdate}
+          handleDelete={handleDelete}
         />
       </TabsContent>
 
       <TabsContent value="expense">
         <ExpenseForm
           formData={expenseFormData}
+          error={errorExpense}
+          loading={loadingExpense}
           onChange={setExpenseFormData}
           onSubmit={handleExpenseSubmit}
+          isUpdate={isUpdate}
+          handleDelete={handleDelete}
         />
       </TabsContent>
     </Tabs>

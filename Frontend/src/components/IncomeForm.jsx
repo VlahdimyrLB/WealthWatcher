@@ -30,7 +30,15 @@ import { cn } from "@/lib/utils";
 
 import { Spinner2 } from "./Spinners";
 
-const IncomeForm = ({ formData, onChange, onSubmit, error, loading }) => {
+const IncomeForm = ({
+  formData,
+  onChange,
+  onSubmit,
+  error,
+  loading,
+  isUpdate,
+  handleDelete,
+}) => {
   const handleDateChange = (selectedDate) => {
     onChange({ ...formData, date: selectedDate });
   };
@@ -47,6 +55,12 @@ const IncomeForm = ({ formData, onChange, onSubmit, error, loading }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit();
+  };
+
+  const confirmDelete = () => {
+    if (window.confirm("Are you sure you want to delete this transaction?")) {
+      handleDelete();
+    }
   };
 
   return (
@@ -146,7 +160,23 @@ const IncomeForm = ({ formData, onChange, onSubmit, error, loading }) => {
               <Spinner2 size={10} />
             </div>
           ) : (
-            <Button type="submit">Save Income</Button>
+            <>
+              {!isUpdate ? (
+                <Button type="submit">Save Income</Button>
+              ) : (
+                <div>
+                  <Button type="submit">Update Income</Button>
+                  <Button
+                    variant="destructive"
+                    type="button"
+                    className="mx-3"
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </CardFooter>
       </Card>

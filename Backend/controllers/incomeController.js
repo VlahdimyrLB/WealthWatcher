@@ -190,8 +190,8 @@ const updateIncomeByTransaction = async (req, res) => {
 
     // If the transaction type is Income, update the corresponding Income entry
     if (updatedTransaction.type === "Income") {
-      const updatedIncome = await Income.findByIdAndUpdate(
-        updatedTransaction._id,
+      const updatedIncome = await Income.findOneAndUpdate(
+        { transactionId: updatedTransaction._id },
         { amount, category, date, notes },
         {
           new: true,
