@@ -24,14 +24,14 @@ const menus = [
     description: "Explore and interact with the calendar features.",
   },
   {
-    title: "Reports",
+    title: "Reports and Statistics",
     href: "/reports",
     description: "Generate and analyze various reports.",
   },
   {
-    title: "Statistics",
-    href: "/statistics",
-    description: "Access statistical data and analytics.",
+    title: "Budget",
+    href: "/budgets",
+    description: "Create you budget plan, and track you spending.",
   },
 ];
 
