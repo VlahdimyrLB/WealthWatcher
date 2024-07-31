@@ -21,7 +21,7 @@ app.use("/api/v1/transaction", transactionRoutes);
 
 // db connection and port listener
 const connectDB = require("./database/connect.js");
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 
 const start = async () => {
   try {

@@ -176,7 +176,7 @@ const ExpenseForm = ({
                   <Button
                     variant="destructive"
                     type="button"
-                    className="mx-3"
+                    className="mx-2"
                     onClick={confirmDelete}
                   >
                     Delete
@@ -184,7 +184,7 @@ const ExpenseForm = ({
                   <Button
                     variant="ghost"
                     type="button"
-                    className="ml-4"
+                    className="ml-6"
                     onClick={handleBackToAddForm}
                   >
                     Back to Add
