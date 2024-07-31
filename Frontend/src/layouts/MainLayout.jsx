@@ -12,7 +12,7 @@ const MainLayout = () => {
       <header className="px-16">
         <Navbar isHome={isHome} setIsHome={setIsHome} />
       </header>
-      <main className="flex-col px-24 pt-8">
+      <main className="flex-col px-24 pt-10">
         <Outlet />
       </main>
       <Toaster />

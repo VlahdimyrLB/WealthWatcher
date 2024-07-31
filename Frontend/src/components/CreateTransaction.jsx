@@ -6,7 +6,11 @@ import ExpenseForm from "./ExpenseForm";
 import { useToast } from "@/components/ui/use-toast";
 import { AuthContext } from "@/contexts/AuthContext";
 
-const CreateTransaction = ({ fetchTransactions, toUpdateData }) => {
+const CreateTransaction = ({
+  fetchTransactions,
+  toUpdateData,
+  setToUpdateData,
+}) => {
   const { toast } = useToast();
   const { user } = useContext(AuthContext);
 
@@ -160,6 +164,14 @@ const CreateTransaction = ({ fetchTransactions, toUpdateData }) => {
     }
   }, [toUpdateData, user._id]);
 
+  const handleBackToAddForm = () => {
+    clearIncomeForm();
+    clearExpenseForm();
+    setToUpdateData(null);
+    setIsUpdate(false);
+    setActiveTab("income");
+  };
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-[400px]">
       <TabsList className="grid w-full grid-cols-2">
@@ -176,6 +188,7 @@ const CreateTransaction = ({ fetchTransactions, toUpdateData }) => {
           onSubmit={handleIncomeSubmit}
           isUpdate={isUpdate}
           handleDelete={handleDelete}
+          handleBackToAddForm={handleBackToAddForm}
         />
       </TabsContent>
 
@@ -188,6 +201,7 @@ const CreateTransaction = ({ fetchTransactions, toUpdateData }) => {
           onSubmit={handleExpenseSubmit}
           isUpdate={isUpdate}
           handleDelete={handleDelete}
+          handleBackToAddForm={handleBackToAddForm}
         />
       </TabsContent>
     </Tabs>

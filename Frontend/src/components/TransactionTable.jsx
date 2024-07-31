@@ -111,7 +111,7 @@ const TransactionTable = ({ transactions, loading, setToUpdateData }) => {
         {day.transactions.map((transaction, idx) => (
           <div
             key={idx}
-            className="flex items-center justify-between p-2 hover:opacity-80 hover:bg-gray-300 rounded-md cursor-pointer"
+            className="flex items-center justify-between p-2 hover:opacity-80 hover:bg-gray-200 hover:text-black rounded-md cursor-pointer"
             onClick={() => setToUpdateData(transaction)}
           >
             <div className="w-1/4 font-bold text-md">

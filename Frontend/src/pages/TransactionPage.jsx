@@ -95,6 +95,7 @@ const TransactionPage = () => {
         <CreateTransaction
           fetchTransactions={fetchTransactions}
           toUpdateData={toUpdateData}
+          setToUpdateData={setToUpdateData}
         />
       </div>
     </section>

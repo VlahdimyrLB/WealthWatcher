@@ -15,6 +15,14 @@ import {
 } from "@/components/ui/dialog";
 
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -291,11 +299,27 @@ const CalendarPage = () => {
     >
       {loading ? (
         <div className="flex flex-col items-center justify-center">
-          <p className="text-sm">Binding Calendar Data ...</p>
+          <p className="text-sm">Loading data...</p>
           <Spinner2 size={15} />
         </div>
       ) : (
-        <FullCalendar myEvents={events} onEventClick={handleEventClick} />
+        <div className="flex flex-col">
+          <div className="lg:-mt-10 -ml-3">
+            <div className="text-[17px] font-semibold opacity-80 mb-8">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>Menu</BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>Calendar</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
+          </div>
+
+          <FullCalendar myEvents={events} onEventClick={handleEventClick} />
+        </div>
       )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>

@@ -13,7 +13,7 @@ import DashboardPage from "./pages/DashboardPage";
 import TransactionPage from "./pages/TransactionPage";
 import CalendarPage from "./pages/CalendarPage";
 import ReportsPage from "./pages/ReportsPage";
-import StatisticsPage from "./pages/StatisticsPage";
+import BudgetsPage from "./pages/BudgetsPage";
 
 // Auth Context
 import { AuthProvider } from "./contexts/AuthContext";
@@ -65,10 +65,10 @@ const App = () => {
                 }
               />
               <Route
-                path="statistics"
+                path="budgets"
                 element={
                   <ProtectedRoute>
-                    <StatisticsPage />
+                    <BudgetsPage />
                   </ProtectedRoute>
                 }
               />

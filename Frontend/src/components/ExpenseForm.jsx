@@ -38,6 +38,7 @@ const ExpenseForm = ({
   loading,
   isUpdate,
   handleDelete,
+  handleBackToAddForm,
 }) => {
   const handleDateChange = (selectedDate) => {
     onChange({ ...formData, date: selectedDate });
@@ -179,6 +180,14 @@ const ExpenseForm = ({
                     onClick={confirmDelete}
                   >
                     Delete
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    className="ml-4"
+                    onClick={handleBackToAddForm}
+                  >
+                    Back to Add
                   </Button>
                 </div>
               )}
