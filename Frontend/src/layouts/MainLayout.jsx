@@ -9,10 +9,10 @@ const MainLayout = () => {
   return (
     <div>
       {/* className="shadow-md dark:shadow-md dark:shadow-stone-500/30 px-16" */}
-      <header className="px-16">
+      <header className="lg:px-16 md:px-10 px-2">
         <Navbar isHome={isHome} setIsHome={setIsHome} />
       </header>
-      <main className="flex-col px-24 pt-10">
+      <main className="flex-col lg:px-24 md:px-10 px-6 pt-10">
         <Outlet />
       </main>
       <Toaster />

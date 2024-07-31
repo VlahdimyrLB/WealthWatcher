@@ -71,9 +71,11 @@ const CreateTransaction = ({
           incomeFormData
         );
         toast({ title: "Successfully Updated Income" });
+        setErrorIncome(null);
       } else {
         await axios.post("/api/v1/income", incomeFormData);
         toast({ title: "Successfully Saved Income" });
+        setErrorIncome(null);
       }
 
       clearIncomeForm();
@@ -97,9 +99,11 @@ const CreateTransaction = ({
           expenseFormData
         );
         toast({ title: "Successfully Updated Expense" });
+        setErrorExpense(null);
       } else {
         await axios.post("/api/v1/expense", expenseFormData);
         toast({ title: "Successfully Saved Expense" });
+        setErrorExpense(null);
       }
 
       clearExpenseForm();
@@ -128,6 +132,7 @@ const CreateTransaction = ({
       }
       // Fetch transactions after deletion
       fetchTransactions();
+      handleBackToAddForm(); // Clear the form and reset state after deletion
     } catch (error) {
       console.error("Delete error: ", error.message);
       toast({
@@ -183,6 +188,7 @@ const CreateTransaction = ({
         <IncomeForm
           formData={incomeFormData}
           error={errorIncome}
+          setErrorIncome={setErrorIncome}
           loading={loadingIncome}
           onChange={setIncomeFormData}
           onSubmit={handleIncomeSubmit}
@@ -196,6 +202,7 @@ const CreateTransaction = ({
         <ExpenseForm
           formData={expenseFormData}
           error={errorExpense}
+          setErrorExpense={setErrorExpense}
           loading={loadingExpense}
           onChange={setExpenseFormData}
           onSubmit={handleExpenseSubmit}

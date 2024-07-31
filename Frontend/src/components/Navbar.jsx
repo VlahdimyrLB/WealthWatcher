@@ -42,11 +42,11 @@ const Navbar = ({ isHome, setIsHome }) => {
 
   return (
     <nav>
-      <ul className="flex items-center justify-between">
-        <li className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center md:justify-between">
           <Link
             to="/"
-            className="flex place-items-center gap-2 p-6 mr-4 text-3xl font-extrabold"
+            className="flex lg:place-items-center justify-center gap-2 lg:p-6 p-4 lg:mr-4 lg:text-3xl text-2xl font-extrabold"
           >
             WealthWatcher
           </Link>
@@ -56,8 +56,9 @@ const Navbar = ({ isHome, setIsHome }) => {
               <UserMenu />
             </div>
           ) : null}
-        </li>
-        <li className="flex items-center justify-between gap-2 p-6 space-x-3">
+        </div>
+
+        <div className="flex items-center justify-between gap-2 lg:p-6 p-4 space-x-3">
           {user && !isHome ? (
             <p className="text-md font-medium">
               Hi! <b>{user.name}</b>
@@ -75,7 +76,7 @@ const Navbar = ({ isHome, setIsHome }) => {
                 </NavLink>
               ) : null}
 
-              <Popover>
+              <Popover className="lg:block hidden">
                 <PopoverTrigger
                   onClick={handleLogout}
                   className="text-md font-medium hover:text-slate-400"
@@ -100,18 +101,22 @@ const Navbar = ({ isHome, setIsHome }) => {
             <>
               {!loading && (
                 <>
-                  <NavLink to="/login">
-                    <Button variant="ghost">Login</Button>
-                  </NavLink>
-                  <NavLink to="/register">
-                    <Button variant="ghost">Register</Button>
-                  </NavLink>
+                  <div className="hidden lg:block">
+                    <NavLink to="/login">
+                      <Button variant="ghost">Login</Button>
+                    </NavLink>
+                    <NavLink to="/register">
+                      <Button variant="ghost">Register</Button>
+                    </NavLink>
+                  </div>
+
+                  <Button>A</Button>
                 </>
               )}
             </>
           )}
-        </li>
-      </ul>
+        </div>
+      </div>
     </nav>
   );
 };

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:backend": "cd backend && nodemon app.js",
-    "start:frontend": "cd frontend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev -- --host",
     "start": "npm-run-all --parallel start:backend start:frontend",
     "test:backend": "cd backend && npm test",
     "test:frontend": "cd frontend && npm test",
