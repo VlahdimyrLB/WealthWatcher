@@ -52,7 +52,7 @@ const TransactionPage = () => {
     setFadeIn(true);
   }, [user?._id]);
 
-  console.log(toUpdateData);
+  // console.log(toUpdateData);
 
   return (
     <section className="flex flex-col-reverse pb-10 lg:flex-row">

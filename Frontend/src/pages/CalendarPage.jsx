@@ -85,8 +85,6 @@ const CalendarPage = () => {
       try {
         const response = await axios.get(`/api/v1/income/user/${user._id}`);
 
-        console.log("user income: ", response.data.income);
-
         setIncomeData(response.data.income);
       } catch (error) {
         console.log("Error fetching income:", error);
@@ -99,8 +97,6 @@ const CalendarPage = () => {
     const fetchExpense = async () => {
       try {
         const response = await axios.get(`/api/v1/expense/user/${user._id}`);
-
-        console.log("user expense: ", response.data.expense);
 
         setExpenseData(response.data.expense);
       } catch (error) {
