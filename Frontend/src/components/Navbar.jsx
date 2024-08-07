@@ -110,7 +110,7 @@ const Navbar = ({ isHome, setIsHome }) => {
                     </NavLink>
                   </div>
 
-                  <Button>A</Button>
+                  <Button className="md:hidden block">A</Button>
                 </>
               )}
             </>
