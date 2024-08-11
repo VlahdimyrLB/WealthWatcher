@@ -127,6 +127,19 @@ const BudgetsPage = () => {
                   </Select>
                 </div>
               </div>
+              <div className="py-3">
+                <Label htmlFor="income-notes">Note</Label>
+                <Textarea
+                  placeholder="Type a note here."
+                  id="income-notes"
+                  name="notes"
+                  // value={formData.notes}
+                  // onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button type="submit">Save Budget</Button>
+              </div>
             </CardContent>
           </Card>
         </form>
